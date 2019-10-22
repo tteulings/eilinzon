@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+
+
+{% block title %}
+    Start
+{% endblock %}
+
+{% block main %}
+<script type=module>
+    console.log("test")
+    import "bootstrap"
+    import { Calendar } from '@fullcalendar/core';
+    import dayGridPlugin from '@fullcalendar/daygrid';
+
+
+    var calendarEl = document.getElementById('calendar');
+
+    console.log(calendarEl)
+    var calendar = new Calendar(calendarEl, {
+        plugins: [ dayGridPlugin ]
+    });
+
+    calendar.render();
+</script>
+
+    <div class="row">
+        <div class="col md-4">Test</div>
+        <div class="col md-8 border">
+            <table class="table">
+                <thead>
+                    <th>Datum</th>
+                    <th>Beschrijving</th>
+
+                </thead>
+                {% for event in events %}
+                <tr>
+                    <td>{{event.date}}</td>
+                    <td>{{event.summary}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            </div>
+
+            <div id="calendar"></div>
+
+    </div>
+    <fieldset>
+        <div class="text-normal">
+
+        </div>
+    </fieldset>
+{% endblock %}

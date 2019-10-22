@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Shopping list
+{% endblock %}
+
+{% block main %}
+    <script type=text/javascript>
+        function tests() {
+            console.log("test")
+        }
+
+        $(function() {
+            $(':button#add').on('click', function() {
+                $.getJSON($SCRIPT_ROOT + '/add', {
+                quantity: $('input[name="new_item_quantity"]').val(),
+                item: $('input[name="new_item_item"]').val(),
+                user: $('input[name="new_item_user"]').val(),
+
+
+                }, function(data) {
+                    item = Object.keys(data)[0]
+                    item_object = $('#' + item)
+
+                    if(item_object.get("length") > 0) {
+                        item_object.empty()
+                    }
+                    $('#sl_table > tbody:last-child').prepend(
+                        '<tr id=' + item + '>\
+                        <td>' + data[item]["quantity"] + '</td>\
+                        <td>' + item +'</td>\
+                        <td>' + data[item]["user"] + '</td>\
+                        <td>' + data[item]["datetime"] + '</td>\
+                        <td><button id=close class=close>x</button></td>\
+                        </tr>'
+                    )
+
+                });
+                return false;
+            });
+        });
+
+    $(function() {
+            $(document).on('click', ':button.close', function() {
+                row = $(this).parent().parent()
+                item_name = row.attr('id')
+                row.remove()
+
+                $.getJSON($SCRIPT_ROOT + '/remove', {
+                item: item_name
+                }, function(data) {});
+            });
+        });
+
+</script>
+
+<div class="row my-5">
+    <div class="col bg-light rounded">
+        <table class="table" id="sl_table">
+            <tr id="new_item">
+                <td><input class="form-control" type="text" name="new_item_quantity" placeholder="Hoeveelheid" required="required"></td>
+                <td><input class="form-control" type="text" name="new_item_item" placeholder="Naam van item" required="required"></td>
+                <td><input class="form-control" type="text" name="new_item_user" placeholder="Gebruiker" value={{ username }} required="required"></td>
+                <td><button type="button" id="add" class="btn btn-primary">Toevoegen</button></td>
+
+            </tr>
+
+            <tr>
+                <th>Hoeveelheid</th>
+                <th>Item</th>
+                <th>Auteur</th>
+                <th>Datum</th>
+                <th></th>
+
+                <!-- <th>Verwijderen</th> -->
+            </tr>
+
+            <tbody>
+        {% for key, sl_item in sl_items.items() %}
+
+                <tr id={{ key }}>
+                <td>{{ sl_item.quantity }}</td>
+                <td>{{ key }}</td>
+                <td>{{ sl_item.user }}</td>
+                <td>{{ sl_item.datetime }}</td>
+                <td><button onclick="close()" id=close class=close>x</button></td>
+                </tr>
+        {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+    <script>
+        console.log(screen.width);
+    </script>
+{% endblock %}
+

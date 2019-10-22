@@ -1,0 +1,218 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<link href={{ url_for('static', filename='fullcalendar/core/main.css') }} rel='stylesheet' />
+<link href={{ url_for('static', filename='fullcalendar/list/main.css') }} rel='stylesheet' />
+
+<link href={{ url_for('static', filename='fullcalendar/daygrid/main.css') }} rel='stylesheet' />
+<link href={{ url_for('static', filename='fullcalendar/bootstrap/main.css') }} rel='stylesheet' />
+<link href={{ url_for('static', filename='fullcalendar/google-calendar/main.css') }} rel='stylesheet' />
+
+
+
+<script src={{ url_for('static', filename='fullcalendar/core/main.js') }}></script>
+<script src={{ url_for('static', filename='fullcalendar/daygrid/main.js') }}></script>
+<script src={{ url_for('static', filename='fullcalendar/bootstrap/main.js') }}></script>
+<script src={{ url_for('static', filename='fullcalendar/google-calendar/main.js') }}></script>
+<script src={{ url_for('static', filename='fullcalendar/list/main.js') }}></script>
+<script src={{ url_for('static', filename='fullcalendar/core/locales/nl.js') }}></script>
+
+
+
+
+{% endblock %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block main %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        let calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: ['dayGrid', 'bootstrap', 'googleCalendar', "interaction"],
+            themeSystem: 'bootstrap',
+            googleCalendarApiKey: 'AIzaSyAr3Gt-gehthiGlEpW8xyKPAbYcerEm2N8',
+            locale: "nl",
+            events: {
+                googleCalendarId: 'dg8d8m6n9iolnnjp25o9kl0v90@group.calendar.google.com'
+            }
+        });
+
+        calendar.render();
+    });
+
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar_full');
+        let calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: ['dayGrid', 'bootstrap', 'googleCalendar', "interaction"],
+            themeSystem: 'bootstrap',
+            googleCalendarApiKey: 'AIzaSyAr3Gt-gehthiGlEpW8xyKPAbYcerEm2N8',
+            locale: "nl",
+            events: {
+                googleCalendarId: 'dg8d8m6n9iolnnjp25o9kl0v90@group.calendar.google.com'
+            }
+        });
+
+        calendar.render();
+    });
+
+    $(function() {
+            $(':button#add').on('click', function() {
+                $.getJSON($SCRIPT_ROOT + '/add', {
+                quantity: $('input[name="new_item_quantity"]').val(),
+                item: $('input[name="new_item_item"]').val(),
+                user: "Familie",
+
+
+                }, function(data) {
+                    item = Object.keys(data)[0]
+                    item_object = $('#' + item)
+
+                    if(item_object.get("length") > 0) {
+                        item_object.empty()
+                    }
+                    $('#sl_table > tbody:last-child').prepend(
+                        '<tr id=' + item + '>\
+                        <td>' + data[item]["quantity"] + '</td>\
+                        <td>' + item +'</td>\
+                        <td>' + data[item]["datetime"] + '</td>\
+                        <td><button id=close class=close>x</button></td>\
+                        </tr>'
+                    )
+
+                });
+                return false;
+            });
+        });
+
+    $(function() {
+            $(document).on('click', ':button.close', function() {
+                row = $(this).parent().parent()
+                item_name = row.attr('id')
+                row.remove()
+
+                console.log(item_name)
+                $.getJSON($SCRIPT_ROOT + '/remove', {
+                item: item_name
+                }, function(data) {});
+            });
+        });
+</script>
+
+<div class="row my-5">
+    <div class="col bg-light rounded border-3 p-3 m-5 " style="opacity:0.95">
+        <h3 class="display-5">Agenda</h3>
+
+        <div id='calendar'></div>
+
+        <button type="button" class="fc-today-button btn btn-primary" data-toggle="modal" data-target="#myModal">Voeg verblijf toe</button>
+
+    </div>
+    <div class="col bg-light rounded border-3 p-3 m-5" style="opacity:0.95  ">
+        <h3 class="display-5">winkelmandje</h3>
+        <table class="table" id=sl_table>
+            <tr id="new_item">
+                <td>
+                    <div class="col-xs-1">
+                        <input class="form-control w-100" type="text" name="new_item_quantity" placeholder="Hoeveelheid"
+                            required="required">
+                    </div>
+                </td>
+                <td>
+                    <div class="col-xs-1">
+                        <input class="form-control w-100" type="text" name="new_item_item" placeholder="Naam van item"
+                            required="required">
+                    </div>
+                </td>
+                <div class="col-xs-1">
+                    <td><button type="button" id="add" class="btn btn-primary">Toevoegen</button></td>
+                </div>
+            </tr>
+            <tr>
+                <th>Hoeveelheid</th>
+                <th>Item</th>
+                <th>Datum</th>
+                <th></th>
+
+                <!-- <th>Verwijderen</th> -->
+            </tr>
+
+            <tbody>
+                {% for key, sl_item in sl_items.items() %}
+
+                <tr id={{ key }}>
+                    <td>{{ sl_item.quantity }}</td>
+                    <td>{{ key }}</td>
+                    <td>{{ sl_item.datetime }}</td>
+                    <td><button onclick="close()" id=close class=close>x</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col bg-light rounded border-3 p-3 m-3" style="opacity:0.95">
+        <h3 class="display-5">Logboek</h3>
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+<!--
+        <div id='calendar_full'></div> -->
+
+    </div>
+</div>
+        <!-- The Modal -->
+        <div class="modal fade" id="myModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Maak nieuwe afspraak</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <form method="POST">
+                                <div class="form-group">
+                                    <label for="staying date">Begindatum</label>
+                                </div>
+                                <div class="form-group">
+                                    <input required name="start" type="date" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="staying date">Einddatum</label>
+                                </div>
+                                <div class="form-group">
+                                    <input required name="end" type="date" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="staying_date">Beschrijving</label>
+                                </div>
+                                <div class="form-group">
+                                    <textarea required name="description" class="form-control"></textarea>
+                                </div>
+
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Maak afspraak</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Sluit</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+
+
+
+{% endblock %}

@@ -1,0 +1,137 @@
+
+
+.container
+{
+    /* center contents */
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+
+    width:80%;
+    height:auto;
+}
+
+
+
+.navbar-nav
+{
+    font: 30px;
+}
+
+.navbar-brand
+{
+    font-size: 40px;
+}
+
+/* colors for navbar */
+.navbar-default .navbar-brand .blue
+{
+    color: #537fbe;
+}
+.navbar-default .navbar-brand .red
+{
+    color: #ea433b;
+}
+.navbar-default .navbar-brand .yellow
+{
+    color: #f5b82e;
+}
+.navbar-default .navbar-brand .green
+{
+    color: #2e944b;
+}
+
+
+.alert-info
+{
+    font: 24px georgia, sans-serif;
+
+   background-color: lightblue;
+}
+
+.btn-default
+{
+    font: 24px georgia, sans-serif, bold;
+
+    color: #537fbe;
+}
+
+main .form-control
+{
+    /* center form controls */
+    display: inline-block;
+
+    background-color: #eff0f2;
+
+    /* override Bootstrap's 100% width for form controls */
+    width: auto;
+}
+
+
+main .text-normal
+{
+    font: 24px georgia, sans-serif;
+
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+
+    padding-bottom: 45px;
+    padding-top: 45px;
+
+}
+
+main .text-quote
+{
+    font-size: 140px;
+    color: #ea433b;
+
+    padding-top: 100px;
+}
+
+main .text-quote-klein
+{
+    font-size: 100px;
+
+}
+
+main img
+{
+    /* constrain images on small screens */
+    max-width: 100%;
+}
+
+main td
+{
+    /* font-size: 18px; */
+
+    /* left-align tables' cells */
+    text-align: left;
+
+    /* space between cells */
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+
+}
+
+main th
+{
+
+
+    text-align: left;
+
+    /* space between cells */
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+}
+
+table
+{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+

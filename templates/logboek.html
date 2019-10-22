@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    logboek
+{% endblock %}
+
+{% block main %}
+
+    <form action="{{ url_for('logboek') }}" method="post">
+        <div class="form-group">
+                <button class="btn btn-default" type="submit">Nieuwe entry</button>
+        </div>
+    </form>
+
+    <table>
+        <tr>
+            <th>Datum</th>
+            <th>Bericht</th>
+            <th>Auteur</th>
+            <!-- <th>Verwijderen</th> -->
+        </tr>
+
+    </tr>
+    {% for message in messages %}
+            <tr>
+            <td>{{ message.start }} <br>tot <br>{{ message.start }}</td>
+            <td>{{ message.message }}</td>
+            <td>{{ message.user }}</td>
+<!--
+            <td>
+                <form action="{{ url_for('logboek') }}" method="post">
+                        <div class="form-group">
+                                <button class="btn btn-default" type="submit">X</button>
+                        </div>
+                </form>
+            </td> -->
+            </tr>
+    {% endfor %}
+    <tr>
+    </table>
+
+    <script>
+        console.log(screen.width);
+    </script>
+{% endblock %}
+

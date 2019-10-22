@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta -->
+    <meta charset="utf-8" />
+    <meta content="initial-scale=1, width=device-width" name="viewport" />
+
+    <!-- documentation at http://getbootstrap.com/, alternative themes at https://www.bootstrapcdn.com/bootswatch/ -->
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"> -->
+
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='bootstrap.css') }}" rel="stylesheet" />
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script type=text/javascript> $SCRIPT_ROOT={{ request.script_root|tojson|safe }} ; </script> {% block head %} {%
+        endblock %} <title>Eilinzon: {% block title %}{% endblock %}</title>
+
+    </head>
+
+    <body>
+            <div class="view" style="background-image: url('http://www.eilinzon.com/wp-content/uploads/2016/05/20160801_164523.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
+        <header>
+
+            <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-white scrolling-navbar border-primary px-5 mx-auto" style="border-top: 8px">
+                    <a class="navbar-brand text-primary" href="{{ url_for('start') }}"><h3 class="display-5">Eilinzon</h3   ></a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="{{ url_for('start') }}">Home <span class="sr-only">(current)</span></a>
+                            </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('calendar') }}">Kalender</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('shopping_list') }}">Boodschappenlijst</a>
+                    </li>
+                </ul>
+                <!-- <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form> -->
+            </div>
+        </nav>
+
+    </header>
+        <main>
+            <div class="container pt-5">
+                <script>
+                    $(document).ready(function () {
+                        $('li.active').removeClass('active');
+                        $('a[href="' + location.pathname + '"]').closest('li').addClass('active');
+                    });
+                </script>
+    {% block main %}{% endblock %}
+</div>
+    </main>
+
+</div>
+
+</body>
+
+</html>

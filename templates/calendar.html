@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<link href={{ url_for('static', filename='fullcalendar/core/main.css') }} rel='stylesheet' />
+<link href={{ url_for('static', filename='fullcalendar/daygrid/main.css') }} rel='stylesheet' />
+<link href={{ url_for('static', filename='fullcalendar/bootstrap/main.css') }} rel='stylesheet' />
+
+<script src={{ url_for('static', filename='fullcalendar/core/main.js') }}></script>
+<script src={{ url_for('static', filename='fullcalendar/daygrid/main.js') }}></script>
+<script src={{ url_for('static', filename='fullcalendar/bootstrap/main.js') }}></script>
+<script src={{ url_for('static', filename='fullcalendar/google-calendar/main.js') }}></script>
+<script src={{ url_for('static', filename='fullcalendar/interaction/main.js') }}></script>
+<script src={{ url_for('static', filename='fullcalendar/core/locales/nl.js') }}></script>
+
+
+{% endblock %}
+
+{% block title %}
+Index
+{% endblock %}
+
+{% block main %}
+<script type="text/javascript">
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        let calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: ['dayGrid', 'bootstrap', 'googleCalendar', "interaction"],
+            themeSystem: 'bootstrap',
+            googleCalendarApiKey: 'AIzaSyAr3Gt-gehthiGlEpW8xyKPAbYcerEm2N8',
+            locale:"nl",
+            events: {
+                googleCalendarId: 'dg8d8m6n9iolnnjp25o9kl0v90@group.calendar.google.com'
+            }
+        });
+
+        calendar.render();
+    });
+
+
+</script>
+
+<div class="row my-5 py-4 bg-light rounded">
+    <div class="col-10">
+        <div id='calendar'></div>
+
+    </div>
+    <div class="col">
+        <button type="button" class="fc-today-button btn btn-primary" data-toggle="modal" data-target="#myModal">Voeg verblijf toe</button>
+        <!-- The Modal -->
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Maak nieuwe afspraak</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <form method="POST">
+                            <div class="form-group">
+                                <label for="staying date">Begindatum</label>
+                            </div>
+                            <div class="form-group">
+                                <input required name="start" type="date" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="staying date">Einddatum</label>
+                            </div>
+                            <div class="form-group">
+                                <input required name="end" type="date" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="staying_date">Beschrijving</label>
+                            </div>
+                            <div class="form-group">
+                                <textarea required name="description" class="form-control"></textarea>
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Maak afspraak</button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Sluit</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+
+
+
+        {% endblock %}
