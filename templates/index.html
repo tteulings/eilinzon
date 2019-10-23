@@ -104,7 +104,7 @@ Dashboard
 </script>
 
 <div class="row my-5">
-    <div class="col bg-light rounded border-3 p-3 m-5 " style="opacity:0.95">
+    <div class="col bg-light rounded border-3 p-3 m-3 mt-5" style="opacity:0.95">
         <h3 class="display-5">Agenda</h3>
 
         <div id='calendar'></div>
@@ -112,8 +112,8 @@ Dashboard
         <button type="button" class="fc-today-button btn btn-primary" data-toggle="modal" data-target="#myModal">Voeg verblijf toe</button>
 
     </div>
-    <div class="col bg-light rounded border-3 p-3 m-5" style="opacity:0.95  ">
-        <h3 class="display-5">winkelmandje</h3>
+    <div class="col bg-light rounded border-3 p-3 m-3 mt-5" style="opacity:0.95  ">
+        <h3 class="display-5">Winkelmandje</h3>
         <table class="table" id=sl_table>
             <tr id="new_item">
                 <td>
@@ -157,16 +157,57 @@ Dashboard
 
     </div>
 </div>
-<div class="row">
-    <div class="col bg-light rounded border-3 p-3 m-3" style="opacity:0.95">
-        <h3 class="display-5">Logboek</h3>
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-<!--
-        <div id='calendar_full'></div> -->
+<div class="row my-3">
+    <div class="col bg-light rounded border-3 p-3 mx-3 mb-4" style="opacity:0.95  ">
+        <h3 class="display-5">Logboek (to-do)</h3>
+        <table class="table" id=sl_table>
+            <tr id="new_item">
+                <div class="col-xs-1">
+                    <td><button type="button" disabled=true id="add_log" class="btn btn-primary">Toevoegen</button></td>
+                </div>
+                <td>
+                    <div class="col-xs-1">
+                        <input class="form-control w-100" type="text" name="new_log_author" placeholder="Wie"
+                            required="required">
+                    </div>
+                </td>
+                <td>
+                    <div class="col-xs-1">
+                        <input class="form-control w-100" type="text" name="new_log_description" placeholder="description"
+                            required="required">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th>Wanneer?</th>
+                <th>Wie</th>
+                <th>Beschrijving</th>
+                <th></th>
+            </tr>
+
+            <tbody>
+                <tr id=1>
+                    <td>19-10-2019</td>
+                    <td>Tijs</td>
+                    <td>
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                    </td>
+                </tr>
+                <tr id=3>
+                        <td>19-11-2019</td>
+                        <td>Tijs</td>
+                        <td>
+                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                        </td>
+                    </tr>
+            </tbody>
+
+        </table>
 
     </div>
+
 </div>
+
         <!-- The Modal -->
         <div class="modal fade" id="myModal">
                 <div class="modal-dialog">
