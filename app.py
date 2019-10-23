@@ -5,8 +5,6 @@ from datetime import date, datetime
 import collections
 
 from google_calendar import list_events, create_event
-# from flask_sqlalchemy import SQLAlchemy
-# import datetime, timeago, time
 
 import json
 
@@ -14,8 +12,8 @@ import os, random
 
 app = Flask(__name__)
 
-app.config['BASIC_AUTH_USERNAME'] = 'tet'
-app.config['BASIC_AUTH_PASSWORD'] = 'tet'
+app.config['BASIC_AUTH_USERNAME'] = ''
+app.config['BASIC_AUTH_PASSWORD'] = '108'
 app.config['BASIC_AUTH_FORCE'] = True
 
 basic_auth = BasicAuth(app)
@@ -39,7 +37,6 @@ def start():
 
 
     background_img = random.choice(os.listdir("./static/img"))
-    print(background_img)
     return render_template("index.html", sl_items=order_items, background_img=background_img)
 
 @app.route('/calendar', methods=["GET", "POST"])
