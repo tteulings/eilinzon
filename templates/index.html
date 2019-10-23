@@ -33,35 +33,22 @@ Dashboard
         let calendar = new FullCalendar.Calendar(calendarEl, {
             plugins: ['dayGrid', 'bootstrap', 'googleCalendar', "interaction"],
             themeSystem: 'bootstrap',
-            googleCalendarApiKey: 'AIzaSyAr3Gt-gehthiGlEpW8xyKPAbYcerEm2N8',
+            googleCalendarApiKey: 'AIzaSyB7mWrsaWadYYix5J2lGpg3ppqsVw7hPAY',
             locale: "nl",
             events: {
-                googleCalendarId: 'dg8d8m6n9iolnnjp25o9kl0v90@group.calendar.google.com'
+                googleCalendarId: 'eilinzon@gmail.com'
             }
         });
 
         calendar.render();
     });
 
-
-
-    document.addEventListener('DOMContentLoaded', function () {
-        var calendarEl = document.getElementById('calendar_full');
-        let calendar = new FullCalendar.Calendar(calendarEl, {
-            plugins: ['dayGrid', 'bootstrap', 'googleCalendar', "interaction"],
-            themeSystem: 'bootstrap',
-            googleCalendarApiKey: 'AIzaSyAr3Gt-gehthiGlEpW8xyKPAbYcerEm2N8',
-            locale: "nl",
-            events: {
-                googleCalendarId: 'dg8d8m6n9iolnnjp25o9kl0v90@group.calendar.google.com'
-            }
-        });
-
-        calendar.render();
-    });
 
     $(function() {
             $(':button#add').on('click', function() {
+                if($('input[name="new_item_quantity"]').val() == "" || $('input[name="new_item_item"]').val() == "")
+                    return false
+
                 $.getJSON($SCRIPT_ROOT + '/add', {
                 quantity: $('input[name="new_item_quantity"]').val(),
                 item: $('input[name="new_item_item"]').val(),
@@ -95,7 +82,6 @@ Dashboard
                 item_name = row.attr('id')
                 row.remove()
 
-                console.log(item_name)
                 $.getJSON($SCRIPT_ROOT + '/remove', {
                 item: item_name
                 }, function(data) {});
@@ -112,7 +98,7 @@ Dashboard
         <button type="button" class="fc-today-button btn btn-primary" data-toggle="modal" data-target="#myModal">Voeg verblijf toe</button>
 
     </div>
-    <div class="col bg-light rounded border-3 p-3 m-3 mt-5" style="opacity:0.95  ">
+    <div class="col-5 bg-light rounded border-3 p-3 m-3 mt-5" style="opacity:0.95  ">
         <h3 class="display-5">Winkelmandje</h3>
         <table class="table" id=sl_table>
             <tr id="new_item">
@@ -240,12 +226,15 @@ Dashboard
                                 <div class="form-group">
                                     <textarea required name="description" class="form-control"></textarea>
                                 </div>
+                                <div class="form-group">
 
                                 <!-- Modal footer -->
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-primary">Maak afspraak</button>
                                     <button type="button" class="btn btn-danger" data-dismiss="modal">Sluit</button>
                                 </div>
+                            </div>
+
                             </form>
 
                         </div>

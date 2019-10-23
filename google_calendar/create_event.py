@@ -15,9 +15,9 @@ def create_event(start, end, description):
     # start = tomorrow.isoformat()
     # end = (tomorrow + timedelta(hours=1)).isoformat()
 
-    event_result = service.events().insert(calendarId='dg8d8m6n9iolnnjp25o9kl0v90@group.calendar.google.com',
+    event_result = service.events().insert(calendarId='eilinzon@gmail.com',
                                            body={
-                                               "summary": description,
+                                               "summary": f"REQUEsT: {description}",
                                                "description": 'Made by website',
                                                "start": {"dateTime": start, "timeZone": 'Europe/Amsterdam'},
                                                "end": {"dateTime": end, "timeZone": 'Europe/Amsterdam'},

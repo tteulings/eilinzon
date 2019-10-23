@@ -29,6 +29,7 @@ def start():
         end = str(request.form["end"])
 
         print(start)
+
         create_event.create_event(start,end,description)
 
     with open("logboek.json") as json_file:

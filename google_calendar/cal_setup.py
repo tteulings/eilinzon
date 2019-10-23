@@ -35,4 +35,4 @@ def get_calendar_service(cred="credentials_tijs.json"):
 
 
 if __name__ == '__main__':
-    get_calendar_service("credentials_tijs.json")
+    get_calendar_service("credentials.json")
