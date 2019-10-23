@@ -5,7 +5,6 @@ from google_calendar.cal_setup import get_calendar_service
 def create_event(start, end, description):
        # creates one hour event tomorrow 10 AM IST
 
-    print(start)
     service = get_calendar_service()
 
     start = datetime.strptime(start, "%Y-%m-%d").isoformat()
@@ -17,7 +16,7 @@ def create_event(start, end, description):
 
     event_result = service.events().insert(calendarId='eilinzon@gmail.com',
                                            body={
-                                               "summary": f"REQUEsT: {description}",
+                                               "summary": f"REQUEST: {description}",
                                                "description": 'Made by website',
                                                "start": {"dateTime": start, "timeZone": 'Europe/Amsterdam'},
                                                "end": {"dateTime": end, "timeZone": 'Europe/Amsterdam'},
