@@ -11,6 +11,20 @@
     height:auto;
 }
 
+#log_tr {
+    /* border-style: solid; */
+    position: relative;
+}
+
+#log_tr::after {
+    content: '';
+    background-color: #28a745;
+    position: absolute;
+    right: 100%;
+    top: 10%;
+    bottom: 10%;
+    width: 2px;
+}
 
 
 .navbar-nav
@@ -47,13 +61,6 @@
     font: 24px georgia, sans-serif;
 
    background-color: lightblue;
-}
-
-.btn-default
-{
-    font: 24px georgia, sans-serif, bold;
-
-    color: #537fbe;
 }
 
 main .form-control

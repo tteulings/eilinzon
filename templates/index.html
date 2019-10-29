@@ -18,8 +18,6 @@
 <script src={{ url_for('static', filename='fullcalendar/core/locales/nl.js') }}></script>
 
 
-
-
 {% endblock %}
 
 {% block title %}
@@ -43,83 +41,142 @@ Dashboard
         calendar.render();
     });
 
+    $(function () {
+        $('input[name="daterange"]').daterangepicker({
+            locale: {
+                separator: ' tot ',
+                format: 'DD-MM-YYYY',
+                daysOfWeek: ["zo", "ma", "di", "Wo", "do", "vr", "za"],
+                monthNames: ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"],
+                firstDay: 1,
+            },
+            opens: 'left',
+            autoApply: true,
+        });
 
-    $(function() {
-            $(':button#add').on('click', function() {
-                if($('input[name="new_item_quantity"]').val() == "" || $('input[name="new_item_item"]').val() == "")
-                    return false
+    });
 
-                $.getJSON($SCRIPT_ROOT + '/add', {
+    $(function () {
+        $('input[name="daterange_log"]').daterangepicker({
+            locale: {
+                separator: ' tot ',
+                format: 'DD-MM-YYYY',
+                daysOfWeek: ["zo", "ma", "di", "Wo", "do", "vr", "za"],
+                monthNames: ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"],
+                firstDay: 1,
+            },
+            opens: 'left',
+            autoApply: true,
+        });
+
+    });
+
+    $(function () {
+        $(':button#add').on('click', function () {
+            if ($('input[name="new_item_quantity"]').val() == "" || $('input[name="new_item_item"]').val() == "")
+                return false
+
+            $.getJSON($SCRIPT_ROOT + '/add', {
                 quantity: $('input[name="new_item_quantity"]').val(),
                 item: $('input[name="new_item_item"]').val(),
                 user: "Familie",
 
+            }, function (data) {
+                item = Object.keys(data)[0]
+                item_object = $('#' + item)
 
-                }, function(data) {
-                    item = Object.keys(data)[0]
-                    item_object = $('#' + item)
-
-                    if(item_object.get("length") > 0) {
-                        item_object.empty()
-                    }
-                    $('#sl_table > tbody:last-child').prepend(
-                        '<tr id=' + item + '>\
+                if (item_object.get("length") > 0) {
+                    item_object.empty()
+                }
+                $('#sl_table > tbody:last-child').prepend(
+                    '<tr id=' + item + '>\
                         <td>' + data[item]["quantity"] + '</td>\
-                        <td>' + item +'</td>\
+                        <td>' + item + '</td>\
                         <td>' + data[item]["datetime"] + '</td>\
                         <td><button id=close class=close>x</button></td>\
                         </tr>'
-                    )
+                )
+                $('input[name="new_item_quantity"]')["value"] == ""
+                $('input[name="new_item_item"]')["value"] == ""
 
-                });
-                return false;
             });
+            return false;
         });
+    });
 
-    $(function() {
-            $(document).on('click', ':button.close', function() {
-                row = $(this).parent().parent()
-                item_name = row.attr('id')
-                row.remove()
+    $(function () {
+        $(':button#add_log').on('click', function () {
+            if ($('input[name="new_log_description"]').val() == "" || $('input[name="new_log_author"]').val() == "")
+                return false
 
-                $.getJSON($SCRIPT_ROOT + '/remove', {
+            $.getJSON($SCRIPT_ROOT + '/add_log', {
+                description: $('textarea[name="new_log_description"]').val(),
+                author: $('input[name="new_log_author"]').val(),
+                datetime: $('input[name="daterange_log"]').val()
+
+            }, function (data) {
+                item = Object.keys(data)[0]
+                item_object = $('#' + item)
+
+                if (item_object.get("length") > 0) {
+                    item_object.empty()
+                }
+                $('#log_table > tbody:last-child').prepend(
+                    '<tr id=' + item + '>\
+                        <td>' + data[item]["datetime"] + '</td>\
+                        <td>' + data[item]["author"] + '</td>\
+                        <td>' + data[item]["description"] + '</td>\
+                        </tr>'
+                )
+                $('input[name="new_item_quantity"]')["value"] == ""
+                $('input[name="new_item_item"]')["value"] == ""
+
+            });
+            return false;
+        });
+    });
+
+    $(function () {
+        $(document).on('click', ':button.close', function () {
+            row = $(this).parent().parent()
+            item_name = row.attr('id')
+            row.remove()
+
+            $.getJSON($SCRIPT_ROOT + '/remove', {
                 item: item_name
-                }, function(data) {});
-            });
+            }, function (data) { });
         });
+    });
+
 </script>
 
 <div class="row my-5">
-    <div class="col-6 bg-light rounded border-3 p-3 m-5 mt-5" style="opacity:0.95">
+    <!-- Agenda -->
+    <div class="col col-md-6 bg-light rounded border p-3 m-5 mt-5" style="opacity:0.95">
         <h3 class="display-5">Agenda</h3>
-
         <div id='calendar'></div>
 
         <div>
-            <button type="button" class="m-2 fc-today-button btn btn-primary" data-toggle="modal" data-target="#myModal">Voeg verblijf toe</button>
+            <button type="button" class="m-2 fc-today-button btn btn-primary" data-toggle="modal" data-target="#myModal">Voeg
+                verblijf toe</button>
 
         </div>
 
     </div>
-    <div class="col bg-light rounded border-3 p-3 m-5 mt-5" style="opacity:0.95  ">
-        <h3 class="display-5">Winkelmandje</h3>
+    <!--Boodschappenlijst-->
+    <div class="col bg-light rounded border p-3 m-5 mt-5" style="opacity:0.95  ">
+        <h3 class="display-5">Boodschappenlijst</h3>
         <table class="table" id=sl_table>
             <tr id="new_item">
                 <td>
-                    <div class="col-xs-1">
-                        <input class="form-control w-100" type="text" name="new_item_quantity" placeholder="Hoeveelheid"
-                            required="required">
-                    </div>
+                    <input class="form-control w-100" type="text" name="new_item_quantity" placeholder="Hoeveelheid"
+                        required="required">
                 </td>
                 <td>
-                    <div class="col-xs-1">
-                        <input class="form-control w-100" type="text" name="new_item_item" placeholder="Naam van item"
-                            required="required">
-                    </div>
+                    <input class="form-control w-100" type="text" name="new_item_item" placeholder="Naam van item"
+                        required="required">
                 </td>
-                    <div class="col-xs-1">
-                        <td><button type="button" id="add" class="btn btn-primary">Toevoegen</button></td>
-                    </div>
+                <td><button type="button" id="add" class="btn btn-primary">Toevoegen</button></td>
                 <td>
 
                 </td>
@@ -129,8 +186,6 @@ Dashboard
                 <th>Item</th>
                 <th>Datum</th>
                 <th></th>
-
-                <!-- <th>Verwijderen</th> -->
             </tr>
 
             <tbody>
@@ -149,49 +204,45 @@ Dashboard
 
     </div>
 </div>
+<!-- Logboek -->
 <div class="row my-3">
-    <div class="col bg-light rounded border-3 p-3 mx-5 mb-4" style="opacity:0.95  ">
-        <h3 class="display-5">Logboek (to-do)</h3>
-        <table class="table" id=table>
-            <tr id="new_item">
-                <div class="col-xs-1">
-                    <td><button type="button" disabled=true id="add_log" class="btn btn-primary">Toevoegen</button></td>
+    <div class="col bg-light rounded border p-3 mx-5 mb-4" style="opacity:0.95  ">
+        <h3 class="display-5">Logboek</h3>
+
+
+        <table class="table" id=log_table>
+            <tr>
+                    <td>
+                        <input class="form-control w-75" type="text" name="daterange_log" value="">
+                        <i class="fa fa-calendar"></i>&nbsp;
+                    </td>
+                <td>
+                    <input class="form-control w-100" type="text" name="new_log_author" placeholder="Naam" required="required">
+                </td>
+                <td>
+                    <textarea class="form-control w-100" type="text" name="new_log_description" placeholder="Beschrijving"
+                        required="required"></textarea>
+                </td>
+                <div>
+                    <td><button type="button" id="add_log" class="btn btn-primary">Toevoegen</button></td>
                 </div>
-                <td>
-                    <div class="col-xs-1">
-                        <input class="form-control w-100" type="text" name="new_log_author" placeholder="Wie"
-                            required="required">
-                    </div>
-                </td>
-                <td>
-                    <div class="col-xs-1">
-                        <textarea class="form-control w-100" type="text" name="new_log_description" placeholder="description"
-                            required="required"></textarea>
-                    </div>
-                </td>
             </tr>
             <tr>
-                <th>Wanneer?</th>
-                <th>Wie</th>
+                <th>Verblijfsdata</th>
+                <th>Naam</th>
                 <th>Beschrijving</th>
                 <th></th>
             </tr>
 
             <tbody>
-                <tr id=1>
-                    <td>19-10-2019</td>
-                    <td>Tijs</td>
-                    <td>
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                    </td>
+                {% for key, log_item in log_items.items() %}
+                <tr id="log_tr" class=" border-3" id={{ key }}>
+                    <td>{{ log_item.datetime }}</td>
+                    <td>{{ log_item.author }}</td>
+                    <td>{{ log_item.description }}</td>
                 </tr>
-                <tr id=3>
-                        <td>19-11-2019</td>
-                        <td>Tijs</td>
-                        <td>
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                        </td>
-                    </tr>
+                {% endfor %}
+
             </tbody>
 
         </table>
@@ -200,54 +251,49 @@ Dashboard
 
 </div>
 
-        <!-- The Modal -->
-        <div class="modal fade" id="myModal">
-                <div class="modal-dialog">
-                    <div class="modal-content">
+<!-- The Modal -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
-                        <!-- Modal Header -->
-                        <div class="modal-header">
-                            <h4 class="modal-title">Maak nieuwe afspraak</h4>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Maak nieuwe afspraak</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
 
-                        <!-- Modal body -->
-                        <div class="modal-body">
-                            <form method="POST">
-                                <div class="form-group">
-                                    <label for="staying date">Begindatum</label>
-                                </div>
-                                <div class="form-group">
-                                    <input required name="start" type="date" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label for="staying date">Einddatum</label>
-                                </div>
-                                <div class="form-group">
-                                    <input required name="end" type="date" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label for="staying_date">Beschrijving</label>
-                                </div>
-                                <div class="form-group">
-                                    <textarea required name="description" class="form-control"></textarea>
-                                </div>
-                                <div class="form-group">
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="staying date"><b>Verblijfsdata</b></label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="daterange" value="">
+                        <i class="fa fa-calendar"></i>&nbsp;
+                    </div>
+                    <div class="form-group">
+                        <label for="staying_date"><b>Beschrijving</b></label>
+                    </div>
+                    <div class="form-group">
+                        <textarea required name="description" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
 
-                                <!-- Modal footer -->
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary">Maak afspraak</button>
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Sluit</button>
-                                </div>
-                            </div>
-
-                            </form>
-
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Maak afspraak</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Sluit</button>
                         </div>
                     </div>
-                    </form>
-                </div>
+
+                </form>
+
             </div>
+        </div>
+        </form>
+    </div>
+</div>
 
 
 
