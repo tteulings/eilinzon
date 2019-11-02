@@ -152,101 +152,104 @@ Dashboard
 
 <div class="row my-5">
     <!-- Agenda -->
-    <div class="col col-md-6 bg-light rounded border p-3 m-5 mt-5" style="opacity:0.95">
+    <div class="col-12 col-xl-6 bg-light rounded border p-3 m-5 mt-5 spacer" style="opacity:0.95">
         <h3 class="display-5">Agenda</h3>
         <div id='calendar'></div>
 
         <div>
-            <button type="button" class="m-2 fc-today-button btn btn-primary" data-toggle="modal" data-target="#myModal">Voeg
+            <button type="button" class="m-2 fc-today-button btn btn-primary" data-toggle="modal"
+                data-target="#myModal">Voeg
                 verblijf toe</button>
 
         </div>
 
     </div>
     <!--Boodschappenlijst-->
-    <div class="col bg-light rounded border p-3 m-5 mt-5" style="opacity:0.95  ">
+    <div class="col-12 col-xl bg-light rounded border p-3 m-5 mt-5 spacer" style="opacity:0.95  ">
         <h3 class="display-5">Boodschappenlijst</h3>
-        <table class="table" id=sl_table>
-            <tr id="new_item">
-                <td>
-                    <input class="form-control w-100" type="text" name="new_item_quantity" placeholder="Hoeveelheid"
-                        required="required">
-                </td>
-                <td>
-                    <input class="form-control w-100" type="text" name="new_item_item" placeholder="Naam van item"
-                        required="required">
-                </td>
-                <td><button type="button" id="add" class="btn btn-primary">Toevoegen</button></td>
-                <td>
+        <div class="table-wrapper">
 
-                </td>
-            </tr>
-            <tr>
-                <th>Hoeveelheid</th>
-                <th>Item</th>
-                <th>Datum</th>
-                <th></th>
-            </tr>
+            <table class="table" id=sl_table>
+                <tr id="new_item">
+                    <td>
+                        <input class="form-control w-100" type="text" name="new_item_quantity" placeholder="Hoeveelheid"
+                            required="required">
+                    </td>
+                    <td>
+                        <input class="form-control w-100" type="text" name="new_item_item" placeholder="Naam van item"
+                            required="required">
+                    </td>
+                    <td><button type="button" id="add" class="btn btn-primary">Toevoegen</button></td>
+                    <td>
 
-            <tbody>
-                {% for key, sl_item in sl_items.items() %}
-
-                <tr id={{ key }}>
-                    <td>{{ sl_item.quantity }}</td>
-                    <td>{{ key }}</td>
-                    <td>{{ sl_item.datetime }}</td>
-                    <td><button onclick="close()" id=close class=close>x</button></td>
+                    </td>
                 </tr>
-                {% endfor %}
-            </tbody>
+                <tr>
+                    <th>Hoeveelheid</th>
+                    <th>Item</th>
+                    <th>Datum</th>
+                    <th></th>
+                </tr>
 
-        </table>
+                <tbody>
+                    {% for key, sl_item in sl_items.items() %}
 
+                    <tr id={{ key }}>
+                        <td>{{ sl_item.quantity }}</td>
+                        <td>{{ key }}</td>
+                        <td>{{ sl_item.datetime }}</td>
+                        <td><button onclick="close()" id=close class=close>x</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 <!-- Logboek -->
 <div class="row my-3">
-    <div class="col bg-light rounded border p-3 mx-5 mb-4" style="opacity:0.95  ">
+    <div class="col-12 col-xl bg-light rounded border p-3 mx-5 mb-4 spacer" style="opacity:0.95  ">
         <h3 class="display-5">Logboek</h3>
 
+        <div class="table-wrapper">
 
-        <table class="table" id=log_table>
-            <tr>
+            <table class="table" id=log_table>
+                <tr>
                     <td>
                         <input class="form-control w-75" type="text" name="daterange_log" value="">
                         <i class="fa fa-calendar"></i>&nbsp;
                     </td>
-                <td>
-                    <input class="form-control w-100" type="text" name="new_log_author" placeholder="Naam" required="required">
-                </td>
-                <td>
-                    <textarea class="form-control w-100" type="text" name="new_log_description" placeholder="Beschrijving"
-                        required="required"></textarea>
-                </td>
-                <div>
-                    <td><button type="button" id="add_log" class="btn btn-primary">Toevoegen</button></td>
-                </div>
-            </tr>
-            <tr>
-                <th>Verblijfsdata</th>
-                <th>Naam</th>
-                <th>Beschrijving</th>
-                <th></th>
-            </tr>
-
-            <tbody>
-                {% for key, log_item in log_items.items() %}
-                <tr id="log_tr" class=" border-3" id={{ key }}>
-                    <td>{{ log_item.datetime }}</td>
-                    <td>{{ log_item.author }}</td>
-                    <td>{{ log_item.description }}</td>
+                    <td>
+                        <input class="form-control w-100" type="text" name="new_log_author" placeholder="Naam"
+                            required="required">
+                    </td>
+                    <td>
+                        <textarea class="form-control w-100" type="text" name="new_log_description"
+                            placeholder="Beschrijving" required="required"></textarea>
+                    </td>
+                    <div>
+                        <td><button type="button" id="add_log" class="btn btn-primary">Toevoegen</button></td>
+                    </div>
                 </tr>
-                {% endfor %}
+                <tr>
+                    <th>Verblijfsdata</th>
+                    <th>Naam</th>
+                    <th>Beschrijving</th>
+                    <th></th>
+                </tr>
 
-            </tbody>
+                <tbody>
+                    {% for key, log_item in log_items.items() %}
+                    <tr id="log_tr" class=" border-3" id={{ key }}>
+                        <td>{{ log_item.datetime }}</td>
+                        <td>{{ log_item.author }}</td>
+                        <td class="small_column">{{ log_item.description }}</td>
+                    </tr>
+                    {% endfor %}
 
-        </table>
-
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>

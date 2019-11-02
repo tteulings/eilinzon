@@ -1,4 +1,22 @@
+.table-wrapper {
+    overflow: auto;
+  }
 
+  .small_column {
+    min-width: 22em;
+    max-width: 22em;
+
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+@media (max-width: 576px) {
+    div.spacer {
+        margin-left: auto !important;
+        margin-right: auto !important;
+
+    }
+}
 
 .container
 {
