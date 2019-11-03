@@ -107,8 +107,10 @@ def add_log():
     with open("logboek.json", mode="r") as json_file:
         log_items = json.load(json_file)
 
-    key = int(list(log_items.keys())[-1]) + 1
-    print(request.args.get('datetime'))
+    if list(log_items.keys()):
+        key = int(list(log_items.keys())[-1]) + 1
+    else:
+        key = 0
 
     new_item = {key : {
         "author" : request.args.get('author'),
