@@ -240,7 +240,7 @@ Dashboard
 
                 <tbody>
                     {% for key, log_item in log_items.items() %}
-                    <tr id="log_tr" class=" border-3" id={{ key }}>
+                    <tr id="log_tr" class=" border-3">
                         <td>{{ log_item.datetime }}</td>
                         <td>{{ log_item.author }}</td>
                         <td class="small_column">{{ log_item.description }}</td>
