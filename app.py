@@ -51,12 +51,10 @@ def informatie():
 @app.route('/calendar', methods=["GET", "POST"])
 def calendar():
     if request.method == "POST":
-        print(request.form)
         description = request.form["description"]
         start = str(request.form["start"])
         end = str(request.form["end"])
 
-        print(start)
         create_event.create_event(start,end,description)
 
     return render_template("calendar.html")
@@ -98,7 +96,7 @@ def add_to_list():
     new_item = {request.args.get('item') : {
         "user" : request.args.get('user'),
         "datetime" : date_cur,
-        "quantity" : request.args.get('quantity')
+        "quantity" : 1
     }}
 
     sl_items.update(new_item)
