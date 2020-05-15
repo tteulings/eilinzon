@@ -11,6 +11,7 @@ container
 
     overflow: hidden;
     word-wrap: break-word;
+    white-space:pre-wrap;
 }
 
 @media (max-width: 1200px) {
