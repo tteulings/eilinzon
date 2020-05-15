@@ -24,6 +24,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans&display=swap" rel="stylesheet"> 
 
     <script type=text/javascript> $SCRIPT_ROOT={{ request.script_root|tojson|safe }} ; </script> {% block head %} {%
         endblock %} <title>Eilinzon: {% block title %}{% endblock %}</title>
@@ -35,7 +36,7 @@
         <header>
 
             <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-white scrolling-navbar border-primary px-5 mx-auto" style="border-top: 8px">
-                    <a class="navbar-brand text-primary" href="{{ url_for('start') }}"><h3 class="display-5">Eilinzon</h3   ></a>
+                    <a class="navbar-brand text-primary" href="{{ url_for('start') }}"><h3 class="font-weight-bold">Eilinzon</h3   ></a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -43,13 +44,10 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mr-auto">
                             <li class="nav-item active">
-                                <a class="nav-link" href="{{ url_for('start') }}">Home <span class="sr-only">(current)</span></a>
+                                <a class="text-primary nav-link" href="{{ url_for('start') }}">Home <span class="sr-only">(current)</span></a>
                             </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('calendar') }}">Kalender</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('shopping_list') }}">Boodschappenlijst</a>
+                        <a class="text-primary nav-link" href="{{ url_for('informatie') }}">Informatie</a>
                     </li>
                 </ul>
                 <!-- <form class="form-inline my-2 my-lg-0">
@@ -61,7 +59,7 @@
 
     </header>
         <main>
-            <div class="container-fluid w-75  pt-5">
+            <div class="container-fluid pt-5">
                 <script>
                     $(document).ready(function () {
                         $('li.active').removeClass('active');

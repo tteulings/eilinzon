@@ -33,10 +33,15 @@ Dashboard
             themeSystem: 'bootstrap',
             googleCalendarApiKey: 'AIzaSyB7mWrsaWadYYix5J2lGpg3ppqsVw7hPAY',
             locale: "nl",
-            events: {
-                googleCalendarId: 'eilinzon@gmail.com'
-            }
-        });
+            eventSources: [{
+                googleCalendarId: 'eilinzon@gmail.com',
+            },
+            {
+                googleCalendarId: 'nl.dutch#holiday@group.v.calendar.google.com',
+                color: '#478006'
+
+            }],
+            });
 
         calendar.render();
     });
@@ -73,7 +78,7 @@ Dashboard
 
     $(function () {
         $(':button#add').on('click', function () {
-            if ($('input[name="new_item_quantity"]').val() == "" || $('input[name="new_item_item"]').val() == "")
+            if ($('input[name="new_item_item"]').val() == "")
                 return false
 
             $.getJSON($SCRIPT_ROOT + '/add', {
@@ -96,8 +101,8 @@ Dashboard
                         <td><button id=close class=close>x</button></td>\
                         </tr>'
                 )
-                $('input[name="new_item_quantity"]')["value"] == ""
-                $('input[name="new_item_item"]')["value"] == ""
+                $('input[name="new_item_quantity"]').val("")
+                $('input[name="new_item_item"]').val("")
 
             });
             return false;
@@ -128,8 +133,10 @@ Dashboard
                         <td>' + data[item]["description"] + '</td>\
                         </tr>'
                 )
-                $('input[name="new_item_quantity"]')["value"] == ""
-                $('input[name="new_item_item"]')["value"] == ""
+
+                $('textarea[name="new_log_description"]').val("")
+                $('input[name="new_log_author"]').val("")
+                $('input[name="daterange_log"]').val("")
 
             });
             return false;
@@ -169,7 +176,7 @@ Dashboard
         <h3 class="display-5">Boodschappenlijst</h3>
         <div class="table-wrapper">
 
-            <table class="table" id=sl_table>
+            <table class="table" id="sl_table">
                 <tr id="new_item">
                     <td>
                         <input class="form-control w-100" type="text" name="new_item_quantity" placeholder="Hoeveelheid"
@@ -240,7 +247,7 @@ Dashboard
 
                 <tbody>
                     {% for key, log_item in log_items.items() %}
-                    <tr id="log_tr" class=" border-3" id={{ key }}>
+                    <tr id="log_tr" class=" border-3">
                         <td>{{ log_item.datetime }}</td>
                         <td>{{ log_item.author }}</td>
                         <td class="small_column">{{ log_item.description }}</td>

@@ -1,5 +1,8 @@
+container
+
 .table-wrapper {
     overflow: auto;
+    max-height: 25em;
   }
 
   .small_column {
@@ -10,23 +13,55 @@
     word-wrap: break-word;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 1200px) {
     div.spacer {
         margin-left: auto !important;
         margin-right: auto !important;
-
     }
 }
 
-.container
+@media (max-width: 800px) {
+    div.container-fluid {
+        margin-left: auto !important;
+        margin-right: auto !important;
+
+        width: 95% !important;
+    }
+
+    body {
+        font-size: 0.9rem !important
+    }
+
+    button.btn {
+        font-size: 0.8rem !important
+    }
+
+    div h3 {
+        font-size: 1.3rem !important
+    }
+
+    div h2 {
+        font-size: 1rem !important
+    }
+
+    input.form-control, textarea.form-control {
+    font-size: 0.8rem !important
+    }
+
+}
+
+.container-fluid
 {
     /* center contents */
     margin-left: auto;
     margin-right: auto;
-    text-align: center;
+    width:80% !important;
+    height:100rem;
+}
 
-    width:80%;
-    height:auto;
+
+body {
+    font-family: 'Merriweather Sans', sans-serif;
 }
 
 #log_tr {

@@ -1,14 +1,13 @@
-from flask import Flask, redirect, render_template, request, session, url_for, jsonify, json
+from flask import Flask, redirect, render_template, request, session, url_for, jsonify, json, send_file
 from flask_basicauth import BasicAuth
 from datetime import date, datetime
 
 import collections
+import json
+import os, random
 
 from google_calendar import list_events, create_event
 
-import json
-
-import os, random
 
 app = Flask(__name__)
 
@@ -17,6 +16,7 @@ app.config['BASIC_AUTH_PASSWORD'] = '108'
 app.config['BASIC_AUTH_FORCE'] = True
 
 basic_auth = BasicAuth(app)
+
 
 username="Familie"
 
@@ -28,7 +28,6 @@ def start():
 
         create_event.create_event(start, end , description)
 
-    print("tet")
     with open("boodschappenlijst.json") as json_file:
         sl_items = json.load(json_file)
         order_items = collections.OrderedDict(reversed(list(sl_items.items())))
@@ -40,6 +39,14 @@ def start():
 
     background_img = random.choice(os.listdir("./static/img"))
     return render_template("index.html", sl_items=order_items, log_items=log_items, background_img=background_img)
+
+
+@app.route('/informatie', methods=["GET", "POST"])
+def informatie():
+
+
+    return render_template("informatie.html")
+
 
 @app.route('/calendar', methods=["GET", "POST"])
 def calendar():
@@ -107,8 +114,10 @@ def add_log():
     with open("logboek.json", mode="r") as json_file:
         log_items = json.load(json_file)
 
-    key = int(list(log_items.keys())[-1]) + 1
-    print(request.args.get('datetime'))
+    if list(log_items.keys()):
+        key = int(list(log_items.keys())[-1]) + 1
+    else:
+        key = 0
 
     new_item = {key : {
         "author" : request.args.get('author'),
