@@ -173,15 +173,11 @@ Dashboard
     </div>
     <!--Boodschappenlijst-->
     <div class="col-12 col-xl bg-light rounded border p-3 m-5 mt-5 spacer" style="opacity:0.95  ">
-        <h3 class="display-5">Boodschappenlijst</h3>
+        <h3 class="display-5">Takenlijst</h3>
         <div class="table-wrapper">
 
             <table class="table" id="sl_table">
                 <tr id="new_item">
-                    <td>
-                        <input class="form-control w-100" type="text" name="new_item_quantity" placeholder="Hoeveelheid"
-                            required="required">
-                    </td>
                     <td>
                         <input class="form-control w-100" type="text" name="new_item_item" placeholder="Naam van item"
                             required="required">
@@ -192,7 +188,6 @@ Dashboard
                     </td>
                 </tr>
                 <tr>
-                    <th>Hoeveelheid</th>
                     <th>Item</th>
                     <th>Datum</th>
                     <th></th>
@@ -202,7 +197,6 @@ Dashboard
                     {% for key, sl_item in sl_items.items() %}
 
                     <tr id={{ key }}>
-                        <td>{{ sl_item.quantity }}</td>
                         <td>{{ key }}</td>
                         <td>{{ sl_item.datetime }}</td>
                         <td><button onclick="close()" id=close class=close>x</button></td>
