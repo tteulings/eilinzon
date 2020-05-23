@@ -143,19 +143,21 @@ Dashboard
         var filter = document.getElementById("search_field").value;
         $('#sl_table > tbody').empty()
         for (var i in sl_items) {
-            if(sl_items[i].item.toLowerCase().match(filter.toLowerCase())) {
+            if (sl_items[i].item.toLowerCase().match(filter.toLowerCase())) {
                 $('#sl_table > tbody').append(
                     '<tr id=' + sl_items[i].item + '> \
                         <td>' + sl_items[i].item + '</td> \
                         <td>' + sl_items[i].datetime + '</td> \
                         <td><button onclick=' + close() + 'id=close class=close>x</button></td> \
-                    </tr>')       
+                    </tr>')
             }
         }
     }
 
-    $.getJSON($SCRIPT_ROOT + '/get_items', function (data) { sl_items = data.items
-    console.log(data.items)})
+    $.getJSON($SCRIPT_ROOT + '/get_items', function (data) {
+        sl_items = data.items
+        console.log(data.items)
+    })
 
     render_calendar()
     add_datarange_pickers()
@@ -231,7 +233,7 @@ Dashboard
     <div class="col-12 col-xl bg-light rounded border p-3 mx-5 mb-4 spacer" style="opacity:0.95  ">
         <h3 class="display-5">Logboek</h3>
 
-        <div class="table-wrapper">
+        <div class="table-wrapper my-custom-scrollbar-log">
 
             <table class="table" id=log_table>
                 <tr>
