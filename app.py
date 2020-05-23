@@ -1,5 +1,6 @@
 from flask import Flask, redirect, render_template, request, session, url_for, jsonify, json, send_file
 from flask_basicauth import BasicAuth
+from flask_mail import Mail, Message
 from datetime import date, datetime
 
 import collections
@@ -15,6 +16,14 @@ app.config['BASIC_AUTH_USERNAME'] = ''
 app.config['BASIC_AUTH_PASSWORD'] = '108'
 app.config['BASIC_AUTH_FORCE'] = True
 
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT']=465
+app.config['MAIL_USE_SSL']=True
+app.config['MAIL_USE_TLS']=False
+app.config['MAIL_USERNAME']= "eilinzon@gmail.com"
+app.config['MAIL_PASSWORD'] = 'fuaebhpzqxhfvydg'
+
+mail = Mail(app)
 basic_auth = BasicAuth(app)
 
 
@@ -41,48 +50,38 @@ def start():
     return render_template("index.html", sl_items=order_items, log_items=log_items, background_img=background_img)
 
 
-@app.route('/informatie', methods=["GET", "POST"])
-def informatie():
-
-
-    return render_template("informatie.html")
-
-
-@app.route('/calendar', methods=["GET", "POST"])
-def calendar():
-    if request.method == "POST":
-        description = request.form["description"]
-        start = str(request.form["start"])
-        end = str(request.form["end"])
-
-        create_event.create_event(start,end,description)
-
-    return render_template("calendar.html")
-
-
-@app.route('/shopping_list', methods=["GET", "POST"])
-def shopping_list():
-
-    if request.method == "POST":
-        with open("logboek.json", mode="r") as json_file:
-            sl_items = json.load(json_file)
-
-        sl_items[request.form["new_item_item"]] = {
-            "user" : request.form["new_item_user"],
-            "datetime" : "{}".format(date.today()),
-            "quantity" : request.form["new_item_quantity"]
-        }
-
-        with open("logboek.json", mode="w") as output_file:
-            json.dump(sl_items, output_file)
-
-    with open("logboek.json") as json_file:
+@app.route('/get_items',methods=["GET", "POST"])
+def get_items():
+    with open("boodschappenlijst.json") as json_file:
         sl_items = json.load(json_file)
 
-        order_items = collections.OrderedDict(reversed(list(sl_items.items())))
+        for item in sl_items.keys():
+            sl_items[item].update({"item":item})
 
+        order_items = list(reversed(list([item[1] for item in sl_items.items()])))
+    return json.dumps({"items":order_items})
 
-    return render_template("shopping_list.html", sl_items=order_items, username=username)
+@app.route('/informatie', methods=["GET", "POST"])
+def informatie():
+    return render_template("informatie.html")
+
+@app.route("/mail")
+def send_mail():
+    coming_events = list_events.list_events(amount=2)
+    
+    with open("mails.json", mode="r") as json_file:
+        mails = json.load(json_file)
+    
+    visitors = [(n,mails.get(n)) for event in coming_events for n in event['summary'].split() if mails.get(n)]
+    
+    msg = Message("Bezoek Eilinzon",
+                sender="eilinzon@gmail.com",
+                recipients=visitors)
+
+    msg.body = "testing"
+    msg.html = f"<b>Beste {visitors}</b>"
+    mail.send(msg)
+    return "succes"
 
 
 @app.route('/add', methods=["GET", "POST"])
