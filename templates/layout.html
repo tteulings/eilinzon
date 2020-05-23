@@ -29,6 +29,23 @@
     <script type=text/javascript> $SCRIPT_ROOT={{ request.script_root|tojson|safe }} ; </script> {% block head %} {%
         endblock %} <title>Eilinzon: {% block title %}{% endblock %}</title>
 
+        <link href={{ url_for('static', filename='fullcalendar/core/main.css') }} rel='stylesheet' />
+        <link href={{ url_for('static', filename='fullcalendar/list/main.css') }} rel='stylesheet' />
+        
+        <link href={{ url_for('static', filename='fullcalendar/daygrid/main.css') }} rel='stylesheet' />
+        <link href={{ url_for('static', filename='fullcalendar/bootstrap/main.css') }} rel='stylesheet' />
+        <!-- <link href={{ url_for('static', filename='fullcalendar/google-calendar/main.css') }} rel='stylesheet' /> -->
+        
+        
+        
+        <script src={{ url_for('static', filename='fullcalendar/core/main.js') }}></script>
+        <script src={{ url_for('static', filename='fullcalendar/daygrid/main.js') }}></script>
+        <script src={{ url_for('static', filename='fullcalendar/bootstrap/main.js') }}></script>
+        <script src={{ url_for('static', filename='fullcalendar/google-calendar/main.js') }}></script>
+        <script src={{ url_for('static', filename='fullcalendar/list/main.js') }}></script>
+        <script src={{ url_for('static', filename='fullcalendar/core/locales/nl.js') }}></script>
+        
+
     </head>
 
     <body>

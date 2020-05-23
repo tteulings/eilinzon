@@ -1,165 +1,172 @@
 {% extends "layout.html" %}
 
-{% block head %}
-<link href={{ url_for('static', filename='fullcalendar/core/main.css') }} rel='stylesheet' />
-<link href={{ url_for('static', filename='fullcalendar/list/main.css') }} rel='stylesheet' />
-
-<link href={{ url_for('static', filename='fullcalendar/daygrid/main.css') }} rel='stylesheet' />
-<link href={{ url_for('static', filename='fullcalendar/bootstrap/main.css') }} rel='stylesheet' />
-<link href={{ url_for('static', filename='fullcalendar/google-calendar/main.css') }} rel='stylesheet' />
-
-
-
-<script src={{ url_for('static', filename='fullcalendar/core/main.js') }}></script>
-<script src={{ url_for('static', filename='fullcalendar/daygrid/main.js') }}></script>
-<script src={{ url_for('static', filename='fullcalendar/bootstrap/main.js') }}></script>
-<script src={{ url_for('static', filename='fullcalendar/google-calendar/main.js') }}></script>
-<script src={{ url_for('static', filename='fullcalendar/list/main.js') }}></script>
-<script src={{ url_for('static', filename='fullcalendar/core/locales/nl.js') }}></script>
-
-
-{% endblock %}
-
 {% block title %}
 Dashboard
 {% endblock %}
 
 {% block main %}
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        var calendarEl = document.getElementById('calendar');
-        let calendar = new FullCalendar.Calendar(calendarEl, {
-            plugins: ['dayGrid', 'bootstrap', 'googleCalendar', "interaction"],
-            themeSystem: 'bootstrap',
-            googleCalendarApiKey: 'AIzaSyB7mWrsaWadYYix5J2lGpg3ppqsVw7hPAY',
-            locale: "nl",
-            eventSources: [{
-                googleCalendarId: 'eilinzon@gmail.com',
-            },
-            {
-                googleCalendarId: 'nl.dutch#holiday@group.v.calendar.google.com',
-                color: '#478006'
+<script>
 
-            }],
+
+    function render_calendar() {
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            let calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: ['dayGrid', 'bootstrap', 'googleCalendar', "interaction"],
+                themeSystem: 'bootstrap',
+                googleCalendarApiKey: 'AIzaSyB7mWrsaWadYYix5J2lGpg3ppqsVw7hPAY',
+                locale: "nl",
+                height: "auto",
+                eventSources: [{
+                    googleCalendarId: 'eilinzon@gmail.com',
+                },
+                {
+                    googleCalendarId: 'nl.dutch#holiday@group.v.calendar.google.com',
+                    color: '#478006'
+
+                }],
             });
 
-        calendar.render();
-    });
+            calendar.render();
+        })
+    }
 
-    $(function () {
-        $('input[name="daterange"]').daterangepicker({
-            locale: {
-                separator: ' tot ',
-                format: 'DD-MM-YYYY',
-                daysOfWeek: ["zo", "ma", "di", "Wo", "do", "vr", "za"],
-                monthNames: ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"],
-                firstDay: 1,
-            },
-            opens: 'left',
-            autoApply: true,
+    function add_datarange_pickers() {
+        $(function () {
+            $('input[name="daterange"]').daterangepicker({
+                locale: {
+                    separator: ' tot ',
+                    format: 'DD-MM-YYYY',
+                    daysOfWeek: ["zo", "ma", "di", "Wo", "do", "vr", "za"],
+                    monthNames: ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"],
+                    firstDay: 1,
+                },
+                opens: 'left',
+                autoApply: true,
+            });
+            $('input[name="daterange_log"]').daterangepicker({
+                locale: {
+                    separator: ' tot ',
+                    format: 'DD-MM-YYYY',
+                    daysOfWeek: ["zo", "ma", "di", "Wo", "do", "vr", "za"],
+                    monthNames: ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"],
+                    firstDay: 1,
+                },
+                opens: 'left',
+                autoApply: true,
+            });
         });
+    }
 
-    });
+    function add_new_item() {
+        if ($('input[name="new_item_item"]').val() == "")
+            return false
 
-    $(function () {
-        $('input[name="daterange_log"]').daterangepicker({
-            locale: {
-                separator: ' tot ',
-                format: 'DD-MM-YYYY',
-                daysOfWeek: ["zo", "ma", "di", "Wo", "do", "vr", "za"],
-                monthNames: ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"],
-                firstDay: 1,
-            },
-            opens: 'left',
-            autoApply: true,
-        });
+        $.getJSON($SCRIPT_ROOT + '/add', {
+            quantity: $('input[name="new_item_quantity"]').val(),
+            item: $('input[name="new_item_item"]').val(),
+            user: "Familie",
 
-    });
+        }, function (data) {
+            item = Object.keys(data)[0]
+            item_object = $('#' + item)
 
-    $(function () {
-        $(':button#add').on('click', function () {
-            if ($('input[name="new_item_item"]').val() == "")
-                return false
+            if (item_object.get("length") > 0) {
+                item_object.empty()
+            }
 
-            $.getJSON($SCRIPT_ROOT + '/add', {
-                quantity: $('input[name="new_item_quantity"]').val(),
-                item: $('input[name="new_item_item"]').val(),
-                user: "Familie",
-
-            }, function (data) {
-                item = Object.keys(data)[0]
-                item_object = $('#' + item)
-
-                if (item_object.get("length") > 0) {
-                    item_object.empty()
-                }
-                $('#sl_table > tbody:last-child').prepend(
-                    '<tr id=' + item + '>\
-                        <td>' + data[item]["quantity"] + '</td>\
+            $('#sl_table > tbody:last-child').prepend(
+                '<tr id=' + item + '>\
                         <td>' + item + '</td>\
                         <td>' + data[item]["datetime"] + '</td>\
                         <td><button id=close class=close>x</button></td>\
                         </tr>'
-                )
-                $('input[name="new_item_quantity"]').val("")
-                $('input[name="new_item_item"]').val("")
+            )
+            $('input[name="new_item_item"]').val("")
 
-            });
-            return false;
         });
-    });
+        return false;
+    }
 
-    $(function () {
-        $(':button#add_log').on('click', function () {
-            if ($('input[name="new_log_description"]').val() == "" || $('input[name="new_log_author"]').val() == "")
-                return false
+    function add_log() {
 
-            $.getJSON($SCRIPT_ROOT + '/add_log', {
-                description: $('textarea[name="new_log_description"]').val(),
-                author: $('input[name="new_log_author"]').val(),
-                datetime: $('input[name="daterange_log"]').val()
+        $(function () {
+            $(':button#add_log').on('click', function () {
+                if ($('input[name="new_log_description"]').val() == "" || $('input[name="new_log_author"]').val() == "")
+                    return false
 
-            }, function (data) {
-                item = Object.keys(data)[0]
-                item_object = $('#' + item)
+                $.getJSON($SCRIPT_ROOT + '/add_log', {
+                    description: $('textarea[name="new_log_description"]').val(),
+                    author: $('input[name="new_log_author"]').val(),
+                    datetime: $('input[name="daterange_log"]').val()
 
-                if (item_object.get("length") > 0) {
-                    item_object.empty()
-                }
-                $('#log_table > tbody:last-child').prepend(
-                    '<tr id=' + item + '>\
+                }, function (data) {
+                    item = Object.keys(data)[0]
+                    item_object = $('#' + item)
+
+                    if (item_object.get("length") > 0) {
+                        item_object.empty()
+                    }
+                    $('#log_table > tbody:last-child').prepend(
+                        '<tr id=' + item + '>\
                         <td>' + data[item]["datetime"] + '</td>\
                         <td>' + data[item]["author"] + '</td>\
                         <td>' + data[item]["description"] + '</td>\
                         </tr>'
-                )
+                    )
 
-                $('textarea[name="new_log_description"]').val("")
-                $('input[name="new_log_author"]').val("")
-                $('input[name="daterange_log"]').val("")
+                    $('textarea[name="new_log_description"]').val("")
+                    $('input[name="new_log_author"]').val("")
+                    $('input[name="daterange_log"]').val("")
 
+                });
+                return false;
             });
-            return false;
         });
-    });
+    }
 
-    $(function () {
-        $(document).on('click', ':button.close', function () {
-            row = $(this).parent().parent()
-            item_name = row.attr('id')
-            row.remove()
+    function remove_item() {
+        $(function () {
+            $(document).on('click', ':button.close', function () {
+                row = $(this).parent().parent()
+                item_name = row.attr('id')
+                row.remove()
 
-            $.getJSON($SCRIPT_ROOT + '/remove', {
-                item: item_name
-            }, function (data) { });
+                $.getJSON($SCRIPT_ROOT + '/remove', {
+                    item: item_name
+                }, function (data) { });
+            });
         });
-    });
+    }
+
+    function onChange() {
+        var filter = document.getElementById("search_field").value;
+        $('#sl_table > tbody').empty()
+        for (var i in sl_items) {
+            if(sl_items[i].item.toLowerCase().match(filter.toLowerCase())) {
+                $('#sl_table > tbody').append(
+                    '<tr id=' + sl_items[i].item + '> \
+                        <td>' + sl_items[i].item + '</td> \
+                        <td>' + sl_items[i].datetime + '</td> \
+                        <td><button onclick=' + close() + 'id=close class=close>x</button></td> \
+                    </tr>')       
+            }
+        }
+    }
+
+    $.getJSON($SCRIPT_ROOT + '/get_items', function (data) { sl_items = data.items
+    console.log(data.items)})
+
+    render_calendar()
+    add_datarange_pickers()
 
 </script>
 
+<script></script>
+
 <div class="row my-5">
     <!-- Agenda -->
-    <div class="col-12 col-xl-6 bg-light rounded border p-3 m-5 mt-5 spacer" style="opacity:0.95">
+    <div class="col-12 col-xl-6 bg-light rounded border p-3 m-5 mt-5" id="agenda" style="opacity:0.95">
         <h3 class="display-5">Agenda</h3>
         <div id='calendar'></div>
 
@@ -167,31 +174,28 @@ Dashboard
             <button type="button" class="m-2 fc-today-button btn btn-primary" data-toggle="modal"
                 data-target="#myModal">Voeg
                 verblijf toe</button>
-
         </div>
 
     </div>
     <!--Boodschappenlijst-->
-    <div class="col-12 col-xl bg-light rounded border p-3 m-5 mt-5 spacer" style="opacity:0.95  ">
-        <h3 class="display-5">Takenlijst</h3>
-        <div class="table-wrapper">
+    <div class="col-12 col-xl bg-light rounded border p-3 m-5 mt-5" id="list" style="opacity:0.95  ">
+        <div class="row">
 
-            <table class="table" id="sl_table">
-                <tr id="new_item">
-                    <td>
-                        <input class="form-control w-100" type="text" name="new_item_item" placeholder="Naam van item"
-                            required="required">
-                    </td>
-                    <td><button type="button" id="add" class="btn btn-primary">Toevoegen</button></td>
-                    <td>
+            <div class="col-6">
+                <h3 class="display-5">Takenlijst</h3>
+            </div>
+            <div class="col-4">
+                <input id="search_field" oninput="onChange()" placeholder="Zoek">
+            </div>
+        </div>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table class="table table-hover" id="sl_table">
 
-                    </td>
-                </tr>
-                <tr>
-                    <th>Item</th>
-                    <th>Datum</th>
-                    <th></th>
-                </tr>
+                <thead>
+                    <th class="w-50">Item</th>
+                    <th class="w-25">Datum</th>
+                    <th class="w-25"></th>
+                </thead>
 
                 <tbody>
                     {% for key, sl_item in sl_items.items() %}
@@ -199,10 +203,25 @@ Dashboard
                     <tr id={{ key }}>
                         <td>{{ key }}</td>
                         <td>{{ sl_item.datetime }}</td>
-                        <td><button onclick="close()" id=close class=close>x</button></td>
+                        <td><button onclick="remove_item()" id=close class=close>x</button></td>
                     </tr>
                     {% endfor %}
                 </tbody>
+            </table>
+        </div>
+        <div class="table-wrapper">
+            <table class="table my-0" id="table_add">
+                <tr id="new_item">
+                    <td>
+                        <input class="form-control w-100" type="text" name="new_item_item" placeholder="Naam van item"
+                            required="required">
+                    </td>
+                    <td><button type="button" onclick="add_new_item()" id="add"
+                            class="btn btn-primary">Toevoegen</button></td>
+                    <td>
+
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
@@ -229,7 +248,8 @@ Dashboard
                             placeholder="Beschrijving" required="required"></textarea>
                     </td>
                     <div>
-                        <td><button type="button" id="add_log" class="btn btn-primary">Toevoegen</button></td>
+                        <td><button type="button" onclick="add_log()" id="add_log"
+                                class="btn btn-primary">Toevoegen</button></td>
                     </div>
                 </tr>
                 <tr>

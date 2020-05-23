@@ -8,22 +8,24 @@
 
 {% block main %}
 <script type=module>
-    console.log("test")
     import "bootstrap"
     import { Calendar } from '@fullcalendar/core';
     import dayGridPlugin from '@fullcalendar/daygrid';
 
 
-    var calendarEl = document.getElementById('calendar');
+    render_calendar() {
+        var calendarEl = document.getElementById('calendar');
 
-    console.log(calendarEl)
-    var calendar = new Calendar(calendarEl, {
-        plugins: [ dayGridPlugin ]
-    });
+        var calendar = new Calendar(calendarEl, {
+            plugins: [ dayGridPlugin ]
+        });
 
-    calendar.render();
+        calendar.render();
+    }
+
+
+    render_calendar()
 </script>
-
     <div class="row">
         <div class="col md-4">Test</div>
         <div class="col md-8 border">
