@@ -202,3 +202,12 @@ table
     .table-wrapper-scroll-y {
     display: block;
     }
+
+    .my-custom-scrollbar-log {
+        position: relative;
+        height: 100vh;
+        overflow: auto;
+        }
+        .table-wrapper-scroll-y {
+        display: block;
+        }
