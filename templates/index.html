@@ -153,6 +153,7 @@ Dashboard
                     mode: mode
                 }, function (data) { });
             });
+            
             if (mode === "tasks") {
 
                 tasks_items.splice(tasks_items.map(e => e.item).indexOf(item), 1)
@@ -274,7 +275,7 @@ Dashboard
 
                     <tr id={{ key }}>
                         <td>{{ key }}</td>
-                        <td><button onclick="remove_item({{key}},'grocery')" id=close class=close>x</button></td>
+                        <td><button onclick="remove_item('{{key}}','grocery')" id=close class=close>x</button></td>
                     </tr>
                     {% endfor %}
                 </tbody>
