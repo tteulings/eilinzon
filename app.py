@@ -37,9 +37,13 @@ def start():
 
         create_event.create_event(start, end , description)
 
-    with open("boodschappenlijst.json") as json_file:
-        sl_items = json.load(json_file)
-        order_items = collections.OrderedDict(reversed(list(sl_items.items())))
+    with open("takenlijst.json") as json_file:
+        tasks_items = json.load(json_file)
+        order_tasks_items = collections.OrderedDict(reversed(list(tasks_items.items())))
+
+    with open("boodschappenlijst2.0.json") as json_file:
+        groc_items = json.load(json_file)
+        order_groc_items = collections.OrderedDict(reversed(list(groc_items.items())))
 
     with open("logboek.json") as json_file:
         log_items = json.load(json_file)
@@ -47,12 +51,20 @@ def start():
 
 
     background_img = random.choice(os.listdir("./static/img"))
-    return render_template("index.html", sl_items=order_items, log_items=log_items, background_img=background_img)
+    return render_template("index.html", tasks_items=order_tasks_items,groc_items=order_groc_items, log_items=log_items, background_img=background_img)
 
 
 @app.route('/get_items',methods=["GET", "POST"])
 def get_items():
-    with open("boodschappenlijst.json") as json_file:
+    mode = request.args.get('mode')
+
+    if mode == "tasks":
+        file = "takenlijst.json"
+    else:
+        file = "boodschappenlijst2.0.json"
+
+
+    with open(file) as json_file:
         sl_items = json.load(json_file)
 
         for item in sl_items.keys():
@@ -86,8 +98,15 @@ def send_mail():
 
 @app.route('/add', methods=["GET", "POST"])
 def add_to_list():
+    mode = request.args.get('mode')
 
-    with open("boodschappenlijst.json", mode="r") as json_file:
+    if mode == "tasks":
+        file = "takenlijst.json"
+    else:
+        file = "boodschappenlijst2.0.json"
+
+
+    with open(file, mode="r") as json_file:
         sl_items = json.load(json_file)
 
     date_cur = datetime.strftime(date.today(), '%d-%m-%Y')
@@ -95,12 +114,13 @@ def add_to_list():
     new_item = {request.args.get('item') : {
         "user" : request.args.get('user'),
         "datetime" : date_cur,
-        "quantity" : 1
+        "quantity" : 1,
+        "item" : request.args.get('item')
     }}
 
     sl_items.update(new_item)
 
-    with open("boodschappenlijst.json", mode="w") as output_file:
+    with open(file, mode="w") as output_file:
         json.dump(sl_items, output_file)
 
     return jsonify(new_item)
@@ -132,12 +152,20 @@ def add_log():
 
 @app.route('/remove', methods=["GET", "POST"])
 def remove_from_list():
-    with open("boodschappenlijst.json", mode="r") as json_file:
+    mode = request.args.get('mode')
+
+    if mode == "tasks":
+        file = "takenlijst.json"
+    else:
+        file = "boodschappenlijst2.0.json"
+    print(file)
+    with open(file, mode="r") as json_file:
         sl_items = json.load(json_file)
 
     sl_items.pop(request.args.get('item'))
+    print(request.args.get('item'))
 
-    with open("boodschappenlijst.json", mode="w") as output_file:
+    with open(file, mode="w") as output_file:
         json.dump(sl_items, output_file)
 
     return jsonify("")
