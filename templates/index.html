@@ -58,14 +58,15 @@ Dashboard
         });
     }
 
-    function add_new_item() {
-        if ($('input[name="new_item_item"]').val() == "")
+    function add_new_item(mode = "tasks") {
+        if ($('input[name="new_' + mode + '"]').val() == "")
             return false
 
         $.getJSON($SCRIPT_ROOT + '/add', {
             quantity: $('input[name="new_item_quantity"]').val(),
-            item: $('input[name="new_item_item"]').val(),
+            item: $('input[name="new_' + mode + '"]').val(),
             user: "Familie",
+            mode: mode
 
         }, function (data) {
             item = Object.keys(data)[0]
@@ -75,14 +76,30 @@ Dashboard
                 item_object.empty()
             }
 
-            $('#sl_table > tbody:last-child').prepend(
-                '<tr id=' + item + '>\
+            if (mode === "tasks") {
+                $('#sl_table_tasks > tbody:last-child').prepend(
+                    '<tr id=' + item + '>\
                         <td>' + item + '</td>\
                         <td>' + data[item]["datetime"] + '</td>\
-                        <td><button id=close class=close>x</button></td>\
+                        <td><button id=close onclick="remove_item(item, mode)" class=close>x</button></td>\
                         </tr>'
-            )
-            $('input[name="new_item_item"]').val("")
+                )
+                $('input[name="new_' + mode + '"]').val("")
+
+                tasks_items.unshift(data[item])
+            }
+            else {
+                $('#sl_table_grocery > tbody:last-child').prepend(
+                    '<tr id=' + item + '>\
+                        <td>' + item + '</td>\
+                        <td><button id=close onclick="remove_item(item, mode)" class=close>x</button></td>\
+                        </tr>'
+                )
+                $('input[name="new_' + mode + '"]').val("")
+
+                groc_items.unshift(data[item])
+
+            }
 
         });
         return false;
@@ -107,6 +124,7 @@ Dashboard
                     if (item_object.get("length") > 0) {
                         item_object.empty()
                     }
+
                     $('#log_table > tbody:last-child').prepend(
                         '<tr id=' + item + '>\
                         <td>' + data[item]["datetime"] + '</td>\
@@ -118,46 +136,87 @@ Dashboard
                     $('textarea[name="new_log_description"]').val("")
                     $('input[name="new_log_author"]').val("")
                     $('input[name="daterange_log"]').val("")
-
                 });
                 return false;
             });
         });
     }
 
-    function remove_item() {
+    function remove_item(item = "", mode = "tasks") {
         $(function () {
             $(document).on('click', ':button.close', function () {
                 row = $(this).parent().parent()
-                item_name = row.attr('id')
                 row.remove()
 
                 $.getJSON($SCRIPT_ROOT + '/remove', {
-                    item: item_name
+                    item: item,
+                    mode: mode
                 }, function (data) { });
             });
+            if (mode === "tasks") {
+
+                tasks_items.splice(tasks_items.map(e => e.item).indexOf(item), 1)
+
+            } else {
+                groc_items.splice(groc_items.map(e => e.item).indexOf(item), 1)
+            }
         });
     }
 
-    function onChange() {
-        var filter = document.getElementById("search_field").value;
-        $('#sl_table > tbody').empty()
+
+    function onChange(mode = "tasks") {
+        var filter = document.getElementById("search_field_" + mode).value;
+        var table = '#sl_table_' + mode
+
+        if (mode === "tasks") {
+            sl_items = tasks_items
+        } else {
+            sl_items = groc_items
+        }
+
+        $(table + ' > tbody').empty()
         for (var i in sl_items) {
             if (sl_items[i].item.toLowerCase().match(filter.toLowerCase())) {
-                $('#sl_table > tbody').append(
-                    '<tr id=' + sl_items[i].item + '> \
+                if (mode === "tasks") {
+
+                    $(table + ' > tbody').append($(
+                        '<tr id=' + sl_items[i].item + '> \
                         <td>' + sl_items[i].item + '</td> \
                         <td>' + sl_items[i].datetime + '</td> \
-                        <td><button onclick=' + close() + 'id=close class=close>x</button></td> \
+                        <td><button id=close_' + i + ' class=close>x</button></td> \
+                    </tr>'))
+                }
+                else {
+                    $(table + ' > tbody').append(
+                        '<tr id=' + sl_items[i].item + '> \
+                        <td>' + sl_items[i].item + '</td> \
+                        <td><button id=close_' + i + ' class=close>x</button></td> \
                     </tr>')
+                }
+
+                var button = $(table).find('#close_' + i)
+                button.attr("item", sl_items[i].item)
+                button.attr("mode", mode)
+
+                $(button).click(function () {
+                    remove_item($(this).attr("item"), $(this).attr("mode"))
+                })
             }
         }
     }
 
-    $.getJSON($SCRIPT_ROOT + '/get_items', function (data) {
-        sl_items = data.items
-        console.log(data.items)
+    $.getJSON($SCRIPT_ROOT + '/get_items', {
+        mode: "grocery"
+    }, function (data) {
+        groc_items = data.items
     })
+
+    $.getJSON($SCRIPT_ROOT + '/get_items', {
+        mode: "tasks"
+    }, function (data) {
+        tasks_items = data.items
+    })
+
 
     render_calendar()
     add_datarange_pickers()
@@ -166,10 +225,18 @@ Dashboard
 
 <script></script>
 
-<div class="row my-5">
+<div class="row mt-5 mb-3">
     <!-- Agenda -->
     <div class="col-12 col-xl-6 bg-light rounded border p-3 m-5 mt-5" id="agenda" style="opacity:0.95">
-        <h3 class="display-5">Agenda</h3>
+        <div class="row">
+            <div class="ml-3">
+                <i class="fas fa-calendar-alt fa-2x text-primary"></i>
+            </div>
+
+            <div class="col-6">
+                <h3 class="display-5">Agenda</h3>
+            </div>
+        </div>
         <div id='calendar'></div>
 
         <div>
@@ -180,32 +247,34 @@ Dashboard
 
     </div>
     <!--Boodschappenlijst-->
-    <div class="col-12 col-xl bg-light rounded border p-3 m-5 mt-5" id="list" style="opacity:0.95  ">
+    <div class="col-12 col-xl bg-light rounded border p-3 m-5 mt-5" id="grocery" style="opacity:0.95  ">
         <div class="row">
+            <div class="ml-3">
+                <i class="fa fa-shopping-bag fa-2x text-primary"></i>
+            </div>
 
             <div class="col-6">
-                <h3 class="display-5">Takenlijst</h3>
+                <h3 class="display-5">Boodschappenlijst</h3>
             </div>
             <div class="col-4">
-                <input id="search_field" oninput="onChange()" placeholder="Zoek">
+                <input class="form-control w-100" id="search_field_grocery" oninput="onChange('grocery')"
+                    placeholder="Zoek">
             </div>
         </div>
         <div class="table-wrapper-scroll-y my-custom-scrollbar">
-            <table class="table table-hover" id="sl_table">
+            <table class="table table-hover" id="sl_table_grocery">
 
                 <thead>
                     <th class="w-50">Item</th>
-                    <th class="w-25">Datum</th>
                     <th class="w-25"></th>
                 </thead>
 
                 <tbody>
-                    {% for key, sl_item in sl_items.items() %}
+                    {% for key, sl_item in groc_items.items() %}
 
                     <tr id={{ key }}>
                         <td>{{ key }}</td>
-                        <td>{{ sl_item.datetime }}</td>
-                        <td><button onclick="remove_item()" id=close class=close>x</button></td>
+                        <td><button onclick="remove_item({{key}},'grocery')" id=close class=close>x</button></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -215,10 +284,10 @@ Dashboard
             <table class="table my-0" id="table_add">
                 <tr id="new_item">
                     <td>
-                        <input class="form-control w-100" type="text" name="new_item_item" placeholder="Naam van item"
+                        <input class="form-control w-100" type="text" name="new_grocery" placeholder="Naam van item"
                             required="required">
                     </td>
-                    <td><button type="button" onclick="add_new_item()" id="add"
+                    <td><button type="button" onclick="add_new_item('grocery')" id="add"
                             class="btn btn-primary">Toevoegen</button></td>
                     <td>
 
@@ -228,10 +297,73 @@ Dashboard
         </div>
     </div>
 </div>
+<!--Takenlijst-->
+<div class="row my-3">
+
+    <div class="col-12 col-xl bg-light rounded border p-3 mx-5 mt-3 mb-5" id="tasks" style="opacity:0.95  ">
+        <div class="row">
+            <div class="ml-3">
+                <i class="fas fa-tasks fa-2x text-primary"></i>
+            </div>
+            <div class="col-6">
+                <h3 class="display-5">Takenlijst</h3>
+            </div>
+            <div class="col-4">
+                <input id="search_field_tasks" oninput="onChange('tasks')" placeholder="Zoek">
+            </div>
+        </div>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table class="table table-hover" id="sl_table_tasks">
+
+                <thead>
+                    <th class="w-75">Taak</th>
+                    <th class="">Datum</th>
+                    <th class=""></th>
+                </thead>
+
+                <tbody>
+                    {% for key, sl_item in tasks_items.items() %}
+
+                    <tr id={{ key }}>
+                        <td>{{ key }}</td>
+                        <td>{{ sl_item.datetime }}</td>
+                        <td><button onclick="remove_item('{{key}}', 'tasks')" id=close class=close>x</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="table-wrapper">
+            <table class="table my-0" id="table_add">
+                <tr id="new_item">
+                    <td>
+                        <input class="form-control w-100" type="text" name="new_tasks" placeholder="Taak"
+                            required="required">
+                    </td>
+                    <td><button type="button" onclick="add_new_item('tasks')" id="add"
+                            class="btn btn-primary">Toevoegen</button></td>
+                    <td>
+
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
 <!-- Logboek -->
 <div class="row my-3">
     <div class="col-12 col-xl bg-light rounded border p-3 mx-5 mb-4 spacer" style="opacity:0.95  ">
-        <h3 class="display-5">Logboek</h3>
+        <div class="row">
+
+
+            <div class="ml-3">
+                <i class="fas fa-book fa-2x text-primary"></i>
+            </div>
+            <div class="col-6   ">
+                <h3 class="display-5">Logboek</h3>
+            </div>
+        </div>
 
         <div class="table-wrapper my-custom-scrollbar-log">
 
