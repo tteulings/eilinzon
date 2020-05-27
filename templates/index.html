@@ -77,95 +77,77 @@ Dashboard
             }
 
             if (mode === "tasks") {
-                $('#sl_table_tasks > tbody:last-child').prepend(
-                    '<tr id=' + item + '>\
-                        <td>' + item + '</td>\
-                        <td>' + data[item]["datetime"] + '</td>\
-                        <td><button id=close onclick="remove_item(item, mode)" class=close>x</button></td>\
-                        </tr>'
-                )
-                $('input[name="new_' + mode + '"]').val("")
-
                 tasks_items.unshift(data[item])
             }
             else {
-                $('#sl_table_grocery > tbody:last-child').prepend(
-                    '<tr id=' + item + '>\
-                        <td>' + item + '</td>\
-                        <td><button id=close onclick="remove_item(item, mode)" class=close>x</button></td>\
-                        </tr>'
-                )
-                $('input[name="new_' + mode + '"]').val("")
-
                 groc_items.unshift(data[item])
-
             }
 
+            $('input[name="new_' + mode + '"]').val("")
+            renderItems(mode)
         });
         return false;
     }
 
     function add_log() {
+        if ($('input[name="new_log_description"]').val() == "" || $('input[name="new_log_author"]').val() == "")
+            return false
 
-        $(function () {
-            $(':button#add_log').on('click', function () {
-                if ($('input[name="new_log_description"]').val() == "" || $('input[name="new_log_author"]').val() == "")
-                    return false
+        $.getJSON($SCRIPT_ROOT + '/add_log', {
+            description: $('textarea[name="new_log_description"]').val(),
+            author: $('input[name="new_log_author"]').val(),
+            datetime: $('input[name="daterange_log"]').val()
 
-                $.getJSON($SCRIPT_ROOT + '/add_log', {
-                    description: $('textarea[name="new_log_description"]').val(),
-                    author: $('input[name="new_log_author"]').val(),
-                    datetime: $('input[name="daterange_log"]').val()
+        }, function (data) {
+            console.log("test")
+            item = Object.keys(data)[0]
+            item_object = $('#' + item)
 
-                }, function (data) {
-                    item = Object.keys(data)[0]
-                    item_object = $('#' + item)
+            if (item_object.get("length") > 0) {
+                item_object.empty()
+            }
 
-                    if (item_object.get("length") > 0) {
-                        item_object.empty()
-                    }
-
-                    $('#log_table > tbody:last-child').prepend(
-                        '<tr id=' + item + '>\
+            $('#log_table > tbody:last-child').prepend(
+                '<tr id=' + item + '>\
                         <td>' + data[item]["datetime"] + '</td>\
                         <td>' + data[item]["author"] + '</td>\
                         <td>' + data[item]["description"] + '</td>\
                         </tr>'
-                    )
+            )
 
-                    $('textarea[name="new_log_description"]').val("")
-                    $('input[name="new_log_author"]').val("")
-                    $('input[name="daterange_log"]').val("")
-                });
-                return false;
-            });
+            $('textarea[name="new_log_description"]').val("")
+            $('input[name="new_log_author"]').val("")
+            $('input[name="daterange_log"]').val("")
         });
-    }
+        return false;
+    };
+    
 
     function remove_item(item = "", mode = "tasks") {
         $(function () {
             $(document).on('click', ':button.close', function () {
-                row = $(this).parent().parent()
-                row.remove()
-
                 $.getJSON($SCRIPT_ROOT + '/remove', {
                     item: item,
                     mode: mode
                 }, function (data) { });
             });
-            
+
             if (mode === "tasks") {
-
                 tasks_items.splice(tasks_items.map(e => e.item).indexOf(item), 1)
-
             } else {
                 groc_items.splice(groc_items.map(e => e.item).indexOf(item), 1)
             }
+
+            renderItems(mode)
         });
     }
 
 
     function onChange(mode = "tasks") {
+        renderItems(mode)
+    }
+
+    function renderItems(mode = "tasks") {
         var filter = document.getElementById("search_field_" + mode).value;
         var table = '#sl_table_' + mode
 
