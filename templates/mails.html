@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Mails
+{% endblock %}
+
+{% block main %}
+<script>
+
+    function add_new_email() {
+        if ($('input[name="new_name"]').val() == "" || $('input[name="new_mail"]').val() == "")
+            return false
+        console.log($('input[name="new_mail"]').val())
+        $.getJSON($SCRIPT_ROOT + '/add_mail', {
+            name: $('input[name="new_name"]').val(),
+            mail: $('input[name="new_mail"]').val(),
+
+        }, function (data) {
+            new_mail = Object.keys(data)[0]
+
+            email_items[new_mail] = data[new_mail]
+            console.log(email_items)
+
+            $('input[name="new_name"]').val("")
+            $('input[name="new_mail"]').val("")
+            renderItems()
+        });
+        return false;
+    }
+
+
+
+    function remove_item(name = "") {
+        $(function () {
+            $(document).on('click', ':button.close', function () {
+                $.getJSON($SCRIPT_ROOT + '/remove_mail', {
+                    mail: name,
+                }, function (data) { });
+            });
+
+            // email_items.splice(email_items.map(e => e.item).indexOf(name), 1)
+            delete email_items[name]
+            renderItems()
+        });
+    }
+
+    function renderItems(mode = "tasks") {
+        $('#mail_table > tbody').empty()
+        for (var i in email_items) {
+            console.log(i)
+            $('#mail_table > tbody').append($(
+                '<tr id=' + i + '> \
+                        <td>' + i + '</td> \
+                        <td>' + email_items[i] + '</td> \
+                        <td><button id=close_' + i + ' class=close>x</button></td> \
+                    </tr>'))
+
+
+
+            var button = $("#mail_table").find('#close_' + i)
+            button.attr("name", i)
+
+            $(button).click(function () {
+                remove_item($(this).attr("name"))
+            })
+        }
+
+    }
+
+    $.getJSON($SCRIPT_ROOT + '/get_mails', {
+    }, function (data) {
+        email_items = data.items
+        console.log(email_items)
+    })
+
+
+
+
+</script>
+
+<script></script>
+
+<!--Takenlijst-->
+<div class="row my-5 w-75">
+
+    <div class="col-12 col-xl bg-light rounded border p-3 mx-5 mt-3 mb-5" id="tasks" style="opacity:0.95  ">
+        <div class="row">
+            <div class="ml-3">
+                <i class="fas fa-at fa-2x text-primary"></i>
+            </div>
+            <div class="col-6">
+                <h3 class="display-5">Emailadressen</h3>
+            </div>
+        </div>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table class="table table-hover" id="mail_table">
+
+                <thead>
+                    <th class="w-75">Naam</th>
+                    <th class="">Emailadres</th>
+                    <th class=""></th>
+                </thead>
+
+                <tbody>
+                    {% for adress in mail_adresses %}
+
+                    <tr id={{adress}}>
+                        <td>{{ adress }}</td>
+                        <td>{{ mail_adresses[adress] }}</td>
+                        <td><button onclick="remove_item('{{adress}}')" id=close class=close>x</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="table-wrapper">
+            <table class="table my-0" id="table_add">
+                <tr id="new_item">
+                    <td>
+                        <input class="form-control w-100" type="text" name="new_name" placeholder="Naam"
+                            required="required">
+                    </td>
+                    <td>
+                        <input class="form-control w-100" type="text" name="new_mail" placeholder="Emailadres"
+                            required="required">
+                    </td>
+                    <td>
+                        <button type="button" onclick="add_new_email('email')" id="add"
+                            class="btn btn-primary">Toevoegen</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
