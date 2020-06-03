@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta
 
 
 def get_events(time_delta = 110):
-    coming_events = list_events.list_events(amount=2)
+    coming_events = list_events.list_events(amount=3)
     
     ending_event = None
     starting_event = None
@@ -20,10 +20,11 @@ def get_events(time_delta = 110):
 
             starting_event = event
         
-        if (end_date - timedelta(hours=time_delta-10) >= now >= (end_date - timedelta(hours=time_delta+24))):
+        if (end_date - timedelta(hours=time_delta) >= now >= (end_date - timedelta(hours=time_delta+24))):
             print(
-                f"End date within {time_delta} hours for visit: {event['summary']}")
+                f"End date within {time_delta+24} and {time_delta} hours for visit: {event['summary']}")
 
             ending_event = event
+
 
     return ending_event, starting_event
