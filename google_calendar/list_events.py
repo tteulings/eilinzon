@@ -2,7 +2,7 @@ import datetime
 from google_calendar.cal_setup import get_calendar_service
 
 
-def list_events(cred="credentials.json", amount=10):
+def list_events(cred="credentials_tijs.json", amount=10):
     service = get_calendar_service(cred)
     # Call the Calendar API
     now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
