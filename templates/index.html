@@ -148,10 +148,10 @@ Dashboard
     }
 
     function addOwner(key) {
-        console.log($('select[id=owner_' + key + ']').val())
+        console.log($('select[id="owner_' + key + '"]').val())
         $.getJSON($SCRIPT_ROOT + '/add_owner', {
             item: key,
-            owner: $('select[id=owner_' + key + ']').val()
+            owner: $('select[id="owner_' + key + '"]').val()
         }, function (data) {
             // item = Object.keys(data)[0]
             // item_object = $('#' + item)
