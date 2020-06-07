@@ -66,8 +66,11 @@ def start():
         log_items = json.load(json_file)
         log_items = collections.OrderedDict(reversed(list(log_items.items())))
 
+    with open("mails.json") as json_file:
+        mail_adresses = json.load(json_file)
+
     background_img = random.choice(os.listdir("./static/img"))
-    return render_template("index.html", tasks_items=order_tasks_items, groc_items=order_groc_items, log_items=log_items, background_img=background_img)
+    return render_template("index.html", tasks_items=order_tasks_items, groc_items=order_groc_items, log_items=log_items, names=mail_adresses.keys(), background_img=background_img)
 
 
 @app.route('/get_items', methods=["GET", "POST"])
@@ -226,6 +229,23 @@ def remove_from_list():
 
     return jsonify("")
 
+
+@app.route('/add_owner', methods=["GET", "POST"])
+def add_owner():
+    item = request.args.get('item')
+    owner = request.args.get('owner')
+
+    file = "takenlijst.json"
+
+    with open(file) as json_file:
+        tasks_items = json.load(json_file)
+    
+    tasks_items[item]["owner"] = owner
+    
+    with open(file, mode="w") as output_file:
+        json.dump(tasks_items, output_file)
+
+    return tasks_items[item]
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)

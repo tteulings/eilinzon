@@ -121,7 +121,7 @@ Dashboard
         });
         return false;
     };
-    
+
 
     function remove_item(item = "", mode = "tasks") {
         $(function () {
@@ -147,6 +147,24 @@ Dashboard
         renderItems(mode)
     }
 
+    function addOwner(key) {
+        console.log($('select[id=owner_' + key + ']').val())
+        $.getJSON($SCRIPT_ROOT + '/add_owner', {
+            item: key,
+            owner: $('select[id=owner_' + key + ']').val()
+        }, function (data) {
+            // item = Object.keys(data)[0]
+            // item_object = $('#' + item)
+
+            // if (item_object.get("length") > 0) {
+            //     item_object.empty()
+            // }
+
+            // $('input[name="new_' + mode + '"]').val("")
+            // renderItems(mode)
+        });
+    }
+
     function renderItems(mode = "tasks") {
         var filter = document.getElementById("search_field_" + mode).value;
         var table = '#sl_table_' + mode
@@ -162,12 +180,36 @@ Dashboard
             if (sl_items[i].item.toLowerCase().match(filter.toLowerCase())) {
                 if (mode === "tasks") {
 
+                    var selection = ""
+
+                    if (sl_items[i].owner) {
+                        selection += "<option value='" + sl_items[i].owner + "'>" + sl_items[i].owner + "</option>"
+                    } else {
+                        selection += "<option value=''>-</option>"
+                    }
+
+                    for (var j in names) {
+                        if (name != sl_items[i].owner) {
+                            selection += "<option value='" + names[j] + "'>" + names[j] + "</option>"
+                        }
+                    }
+
                     $(table + ' > tbody').append($(
                         '<tr id=' + sl_items[i].item + '> \
                         <td>' + sl_items[i].item + '</td> \
+                        <td><select id="owner_' + sl_items[i].item + '" class="form-control" > \
+                            ' + selection + '</select> \
                         <td>' + sl_items[i].datetime + '</td> \
                         <td><button id=close_' + i + ' class=close>x</button></td> \
                     </tr>'))
+
+                    var selection_btn = $('#owner_' + sl_items[i].item)
+                    selection_btn.attr("item", sl_items[i].item)
+                    console.log(selection_btn)
+
+                    $(selection_btn).change(function () {
+                        addOwner($(this).attr("item"))
+                    })
                 }
                 else {
                     $(table + ' > tbody').append(
@@ -176,6 +218,7 @@ Dashboard
                         <td><button id=close_' + i + ' class=close>x</button></td> \
                     </tr>')
                 }
+
 
                 var button = $(table).find('#close_' + i)
                 button.attr("item", sl_items[i].item)
@@ -200,6 +243,11 @@ Dashboard
         tasks_items = data.items
     })
 
+
+    $.getJSON($SCRIPT_ROOT + '/get_mails', {
+    }, function (data) {
+        names = Object.keys(data.items)
+    })
 
     render_calendar()
     add_datarange_pickers()
@@ -300,6 +348,7 @@ Dashboard
 
                 <thead>
                     <th class="w-75">Taak</th>
+                    <th>Eigenaar</th>
                     <th class="">Datum</th>
                     <th class=""></th>
                 </thead>
@@ -309,7 +358,26 @@ Dashboard
 
                     <tr id={{ key }}>
                         <td>{{ key }}</td>
+                        <td><select id="owner_{{ key}}" class="form-control" onchange="addOwner('{{key}}')">
+                                {% if sl_item.owner %}
+                                <option value='{{sl_item.owner}}'>{{sl_item.owner}}</option>
+
+                                {% else %}
+                                <option value=''>-</option>
+
+                                {% endif %}
+
+                                {% for name in names %}
+                                {% if name != sl_item.owner %}
+                                <option value='{{ name }}'>{{name}}</option>
+                                {% endif %}
+
+                                {% endfor %}
+
+                            </select>
+                        </td>
                         <td>{{ sl_item.datetime }}</td>
+
                         <td><button onclick="remove_item('{{key}}', 'tasks')" id=close class=close>x</button></td>
                     </tr>
                     {% endfor %}
